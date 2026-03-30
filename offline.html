@@ -187,7 +187,7 @@
       padding: 10px 24px;
       background: transparent;
       border: none;
-      border-radius: 8px;
+      border-radius: 24px;
       font-family: 'Jost', sans-serif;
       font-size: 0.66rem;
       letter-spacing: 0.24em;
@@ -312,16 +312,19 @@
 
     <button class="retry-btn" onclick="handleRetry(this)">
       <span class="retry-btn-inner">
-        <svg class="retry-icon" viewBox="0 0 16 16" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <defs>
-            <linearGradient id="retryGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-              <stop offset="0%"   stop-color="#275766"/>
-              <stop offset="100%" stop-color="#baffc0"/>
-            </linearGradient>
-          </defs>
-          <path d="M13.5 2.5A6.5 6.5 0 1 1 7 1.5" stroke="url(#retryGrad)"/>
-          <polyline points="13,1 13.5,2.5 12,3" stroke="url(#retryGrad)"/>
-        </svg>
+
+<svg xmlns="http://www.w3.org/2000/svg" height="12px" viewBox="0 -960 960 960" width="12px">
+  <defs>
+    <linearGradient id="myGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="20%" style="stop-color:#275760; stop-opacity:1" />
+      <stop offset="50%" style="stop-color:#4a9aad; stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  
+  <path 
+    fill="url(#myGradient)" 
+    d="M484-212q-112.23 0-190.11-77.84-77.89-77.84-77.89-190T293.89-670q77.88-78 190.11-78 72 0 134 35.5t98 98.5v-134h28v188H556v-28h142q-31-61-88-96.5T484-720q-100 0-170 70t-70 170q0 100 70 170t170 70q77 0 139-44t87-116h30q-26 85-96.5 136.5T484-212Z"/>
+</svg>
         Retry
       </span>
     </button>
