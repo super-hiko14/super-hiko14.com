@@ -5,25 +5,10 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Offline</title>
   <style>
-@font-face {
-    font-family: 'Jost';
-    src: url('Jost.ttf') format('truetype');
-    font-weight: normal;
-    font-style: normal;
-}
-
-@font-face {
-    font-family: 'zenkaku';
-    src: url('zenkaku.ttf') format('truetype');
-    font-weight: normal;
-    font-style: normal;
-}
-
     * {
       margin: 0;
       padding: 0;
       box-sizing: border-box;
-      font-family: 'Jost', 'zenkaku', sans-serif;
     }
 
     html, body {
@@ -34,7 +19,7 @@
     body {
       background-color: #fff;
       color: #000;
-      font-family: 'Jost', 'zenkaku', sans-serif;
+      font-family: sans-serif;
       display: flex;
       align-items: center;
       justify-content: center;
@@ -82,38 +67,18 @@
     }
 
     .icon-wrap {
-      position: relative;
       width: 72px;
       height: 72px;
       display: flex;
       align-items: center;
       justify-content: center;
+      opacity: 0;
+      animation: fadeIn 0.6s ease 0.3s forwards;
     }
 
     .wifi-svg {
       width: 72px;
       height: 72px;
-      overflow: visible;
-      opacity: 0;
-      animation: fadeIn 0.6s ease 0.3s forwards;
-    }
-
-    .slash-line {
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      width: 1.5px;
-      height: 0;
-      background: linear-gradient(180deg, #275766 0%, #baffc0 100%);
-      border-radius: 2px;
-      transform: translate(-50%, -60%) rotate(-45deg);
-      transform-origin: center;
-      animation: slashGrow 0.45s cubic-bezier(0.4, 0, 0.2, 1) 0.75s forwards;
-    }
-
-    @keyframes slashGrow {
-      from { height: 0; opacity: 0; }
-      to   { height: 86px; opacity: 1; }
     }
 
     .text-block {
@@ -144,7 +109,7 @@
 
     .offline-title {
       font-size: 1.6rem;
-      font-weight: normal;
+      font-weight: 700;
       letter-spacing: 0.06em;
       text-transform: uppercase;
       background: linear-gradient(135deg, #275766 0%, #4a9aad 50%, #baffc0 100%);
@@ -187,8 +152,8 @@
       padding: 10px 24px;
       background: transparent;
       border: none;
-      border-radius: 24px;
-      font-family: 'Jost', sans-serif;
+      border-radius: 8px;
+      font-family: sans-serif;
       font-size: 0.66rem;
       letter-spacing: 0.24em;
       text-transform: uppercase;
@@ -238,8 +203,8 @@
     }
 
     .retry-icon {
-      width: 12px;
-      height: 12px;
+      width: 16px;
+      height: 16px;
       flex-shrink: 0;
       transition: transform 0.4s ease;
     }
@@ -294,9 +259,17 @@
 
   <div class="offline-wrap">
 
+    <!-- wifi_off (Material Symbols) -->
     <div class="icon-wrap">
-<svg xmlns="http://www.w3.org/2000/svg" height="72px" viewBox="0 -960 960 960" width="72px" fill="#275766"><path d="M444.5-164.5Q430-179 430-200t14.5-35.5Q459-250 480-250t35.5 14.5Q530-221 530-200t-14.5 35.5Q501-150 480-150t-35.5-14.5ZM254-346l-28-28q50-50 114.5-78T480-480q75 0 139.5 28T734-374l-28 28q-44-44-102-69t-124-25q-66 0-124 25t-102 69ZM84-516l-28-28q81-81 189-128.5T480-720q127 0 235 47.5T904-544l-28 28q-77-77-178.5-120.5T480-680q-116 0-217.5 43.5T84-516Z"/></svg>
-      <div class="slash-line"></div>
+      <svg class="wifi-svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960" aria-hidden="true">
+        <defs>
+          <linearGradient id="wifiGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%"   stop-color="#275766"/>
+            <stop offset="100%" stop-color="#baffc0"/>
+          </linearGradient>
+        </defs>
+        <path fill="url(#wifiGrad)" d="M798-120 480-440q-65 0-125 25t-101 69l-28-28q41-41 97.5-70T442-478L278-642q-47 17-100 51t-94 75l-26-28q42-42 92.5-77t95.5-53l-94-94 20-20 648 648-22 20Zm-353.5-44.5Q430-179 430-200t14.5-35.5Q459-250 480-250t35.5 14.5Q530-221 530-200t-14.5 35.5Q501-150 480-150t-35.5-14.5ZM716-358l-13.5-13.5L689-385l-65-65q20 8 50.5 26.5T734-376l-18 18Zm160-158q-77-77-178.5-120.5T480-680q-21 0-42 1.5t-38 4.5l-36-36q21-5 49-7.5t67-2.5q125 0 233 46.5T904-544l-28 28Z"/>
+      </svg>
     </div>
 
     <div class="text-block">
@@ -310,21 +283,18 @@
 
     <div class="divider"></div>
 
+    <!-- reload (Material Symbols) -->
     <button class="retry-btn" onclick="handleRetry(this)">
       <span class="retry-btn-inner">
-
-<svg xmlns="http://www.w3.org/2000/svg" height="12px" viewBox="0 -960 960 960" width="12px">
-  <defs>
-    <linearGradient id="myGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="20%" style="stop-color:#275760; stop-opacity:1" />
-      <stop offset="50%" style="stop-color:#4a9aad; stop-opacity:1" />
-    </linearGradient>
-  </defs>
-  
-  <path 
-    fill="url(#myGradient)" 
-    d="M484-212q-112.23 0-190.11-77.84-77.89-77.84-77.89-190T293.89-670q77.88-78 190.11-78 72 0 134 35.5t98 98.5v-134h28v188H556v-28h142q-31-61-88-96.5T484-720q-100 0-170 70t-70 170q0 100 70 170t170 70q77 0 139-44t87-116h30q-26 85-96.5 136.5T484-212Z"/>
-</svg>
+        <svg class="retry-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960" aria-hidden="true">
+          <defs>
+            <linearGradient id="retryGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%"   stop-color="#275766"/>
+              <stop offset="100%" stop-color="#baffc0"/>
+            </linearGradient>
+          </defs>
+          <path fill="url(#retryGrad)" d="M484-212q-112.23 0-190.11-77.84-77.89-77.84-77.89-190T293.89-670q77.88-78 190.11-78 72 0 134 35.5t98 98.5v-134h28v188H556v-28h142q-31-61-88-96.5T484-720q-100 0-170 70t-70 170q0 100 70 170t170 70q77 0 139-44t87-116h30q-26 85-96.5 136.5T484-212Z"/>
+        </svg>
         Retry
       </span>
     </button>
@@ -350,14 +320,13 @@
       }, 700);
     }
 
-if ('serviceWorker' in navigator) {
-  window.addEventListener('load', () => {
-    navigator.serviceWorker.register('./sw.js')
-      .then(reg => console.log('Service Worker registered!'))
-      .catch(err => console.error('Registration failed:', err));
-  });
-}
-
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('./sw.js')
+          .then(reg => console.log('Service Worker registered!'))
+          .catch(err => console.error('Registration failed:', err));
+      });
+    }
   </script>
 
 </body>
