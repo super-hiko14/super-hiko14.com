@@ -1625,6 +1625,8 @@ html[data-theme="dark"] .diary-entry:first-child {
   display: block;
   cursor: pointer;
   transition: opacity 0.2s ease, transform 0.2s ease;
+  -webkit-user-drag: none;
+  user-select: none;
 }
 
 .diary-media-panel img:hover {
@@ -1683,6 +1685,16 @@ html[data-theme="dark"] .diary-entry:first-child {
   object-fit: contain;
   border-radius: 8px;
   display: block;
+  cursor: grab;
+  touch-action: none;
+  -webkit-user-drag: none;
+  user-select: none;
+  transition: transform 0.18s ease;
+}
+
+.diary-lightbox-image.is-dragging {
+  cursor: grabbing;
+  transition: none;
 }
 
 .diary-lightbox-close {
