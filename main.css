@@ -1665,6 +1665,7 @@ html[data-theme="dark"] .diary-entry:first-child {
   background-color: rgba(0, 0, 0, 0.9);
   z-index: -1;
   backdrop-filter: blur(4px);
+  transition: opacity 0.22s ease;
 }
 
 .diary-lightbox-content {
@@ -1689,7 +1690,8 @@ html[data-theme="dark"] .diary-entry:first-child {
   touch-action: none;
   -webkit-user-drag: none;
   user-select: none;
-  transition: transform 0.18s ease;
+  transition: transform 0.26s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.22s ease;
+  will-change: transform, opacity;
 }
 
 .diary-lightbox-image.is-dragging {
@@ -2339,6 +2341,28 @@ html[data-theme="dark"] .discord-stat-sep {
 }
 
 html[data-theme="dark"] .yt-stats {
+  color: #6c757d;
+}
+
+/* Misskey follower stats badge */
+.misskey-stats {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  margin-top: 5px;
+  font-size: 0.72rem;
+  color: #adb5bd;
+  letter-spacing: 0.01em;
+}
+
+.misskey-stats-icon {
+  width: 11px;
+  height: 11px;
+  flex-shrink: 0;
+  opacity: 0.6;
+}
+
+html[data-theme="dark"] .misskey-stats {
   color: #6c757d;
 }
 

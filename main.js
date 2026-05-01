@@ -92,6 +92,9 @@ document.addEventListener('DOMContentLoaded', () => {
   // Birthday section initialization
   initBirthday();
 
+  // Misskey follower count
+  initMisskeyFollowers();
+
   const observerOptions = {
     root: null,
     rootMargin: "0px 0px -15% 0px",
@@ -758,4 +761,23 @@ function initBirthday() {
 
   // Update at midnight
   setTimeout(updateBirthdayInfo, (24 - new Date().getHours()) * 60 * 60 * 1000);
+}
+
+function initMisskeyFollowers() {
+  const statsEl = document.getElementById('misskey-stats');
+  const countEl = document.getElementById('misskey-followers');
+  if (!statsEl || !countEl) return;
+
+  const url = '/api/misskey?username=KokyuJene';
+  fetch(url)
+    .then((res) => {
+      if (!res.ok) return null;
+      return res.json();
+    })
+    .then((data) => {
+      if (!data || typeof data.followersCount !== 'number') return;
+      countEl.textContent = data.followersCount.toLocaleString('ja-JP');
+      statsEl.style.display = '';
+    })
+    .catch(function() {});
 }
