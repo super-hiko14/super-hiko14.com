@@ -2701,7 +2701,7 @@ html[data-theme="light"] .calendar-legend-popover {
     padding: 16px 20px; /* 右側の余白をしっかり確保 */
     width: 100%;
     box-sizing: border-box;
-    border-radius: 16px;
+    border-radius: 24px;
   }
 
   .social-card--github {
