@@ -393,9 +393,14 @@ function initSiteNav() {
       { label: 'Clock(beta)', url: 'https://tools.super-hiko14.com/clock/' },
       { label: 'Memo', url: 'https://tools.super-hiko14.com/memo/' },
       { label: 'Polygon', url: 'https://tools.super-hiko14.com/polygon/' },
-      { label: 'Study', url: 'https://tools.super-hiko14.com/study/' }
+      { label: 'Old:Study', url: 'https://tools.super-hiko14.com/study/' }
     ],
-    'kokyujene.super-hiko14.com': [],
+    'kokyujene.super-hiko14.com': [
+      { label: 'HOME', url: 'https://kokyujene.super-hiko14.com/' },
+      { label: 'MEMBERS', url: 'https://kokyujene.super-hiko14.com/members' },
+      { label: 'RULES', url: 'https://kokyujene.super-hiko14.com/rules' },
+      { label: 'NEWS', url: 'https://kokyujene.super-hiko14.com/news' }
+    ],
     'super-hiko14.me': [
       { label: 'Home', url: 'https://super-hiko14.me/' },
       { label: 'Diary', url: 'https://super-hiko14.me/diary/' }
