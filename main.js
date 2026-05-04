@@ -384,8 +384,6 @@ function initSiteNav() {
       { label: 'Contact', url: 'https://super-hiko14.com/contact/' }
     ],
     'about.super-hiko14.com': [
-      { label: 'Super Hiko14', url: 'https://about.super-hiko14.com/super-hiko14/' },
-      { label: 'KokyuJene', url: 'https://about.super-hiko14.com/kokyujene/' }
     ],
     'tools.super-hiko14.com': [
       { label: 'Base64', url: 'https://tools.super-hiko14.com/base64/' },
