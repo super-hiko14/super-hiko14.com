@@ -491,6 +491,13 @@ function initSiteNav() {
     toggle.setAttribute('aria-expanded', 'false');
     drawer.setAttribute('aria-hidden', 'true');
     backdrop.classList.remove('is-visible');
+    drawer.querySelectorAll('.site-nav-submenu.is-open').forEach(submenuEl => {
+      submenuEl.classList.remove('is-open');
+      submenuEl.setAttribute('aria-hidden', 'true');
+    });
+    drawer.querySelectorAll('.site-nav-item-arrow.is-open').forEach(arrowEl => {
+      arrowEl.classList.remove('is-open');
+    });
     if (window.innerWidth <= 680 && wasOpen) {
       document.body.style.position = '';
       document.body.style.top = '';

@@ -57,7 +57,7 @@ a {
 
 /* Dark mode */
 html[data-theme="dark"] body {
-  background-color: #080808;
+  background-color: #030303;
   color: #d0d0d0;
 }
 
@@ -2239,7 +2239,7 @@ html[data-theme="dark"] .link-card:hover .link-card-arrow {
 }
 
 .social-icon {
-  width: 24px; /* 少し大きく */
+  width: 24px;
   height: 24px;
   object-fit: contain;
 }
@@ -2418,8 +2418,8 @@ html[data-theme="dark"] .profile-meta-badge {
 }
 
 html[data-theme="dark"] .social-card {
-  border-color: rgba(255, 255, 255, 0.06);
-  background: rgba(255, 255, 255, 0.02);
+  border-color: rgba(255, 255, 255, 0.08);
+  background: rgba(255, 255, 255, 0.025);
 }
 
 html[data-theme="dark"] .social-card:hover {
@@ -2661,11 +2661,10 @@ html[data-theme="dark"] .social-card:hover .social-card-arrow {
   bottom: 40px;
   left: 50%;
   transform: translateX(-50%) translateY(10px);
-  background: rgba(30, 30, 30, 0.9);
+  background: rgba(12, 12, 12, 0.7);
   backdrop-filter: blur(8px);
   padding: 8px 12px;
   border-radius: 8px;
-  border: 1px solid rgba(255, 255, 255, 0.1);
   display: flex;
   align-items: center;
   gap: 8px;
@@ -2677,7 +2676,6 @@ html[data-theme="dark"] .social-card:hover .social-card-arrow {
 
 html[data-theme="light"] .calendar-legend-popover {
   background: rgba(255, 255, 255, 0.95);
-  border: 1px solid rgba(0, 0, 0, 0.1);
 }
 
 .calendar-legend-popover.is-visible {
@@ -3081,7 +3079,7 @@ html[data-theme="dark"] .days-counter {
   top: calc(100% + 10px);
   right: 0;
   min-width: 248px;
-  background: rgba(252, 252, 252, 0.88);
+  background: rgba(252, 252, 252, 0.65);
   backdrop-filter: blur(24px) saturate(180%);
   -webkit-backdrop-filter: blur(24px) saturate(180%);
   border: 1px solid rgba(39, 87, 102, 0.1);
@@ -3655,7 +3653,7 @@ html[data-theme="dark"] .site-nav-toggle span {
 }
 
 html[data-theme="dark"] .site-nav-drawer {
-  background: rgba(10, 10, 10, 0.88);
+  background: rgba(10, 10, 10, 0.65);
   border-color: rgba(186, 255, 192, 0.1);
 }
 
@@ -3734,7 +3732,7 @@ html[data-theme="dark"] .site-nav-drawer ul li a[aria-current="page"]::before {
     justify-content: flex-start;
     transform: translateY(-100%) scale(1);
     transform-origin: top right;
-    background: rgba(255, 255, 255, 0.94);
+    background: rgba(255, 255, 255, 0.65);
     backdrop-filter: blur(28px) saturate(180%);
     -webkit-backdrop-filter: blur(28px) saturate(180%);
     overflow-y: auto;
@@ -3821,7 +3819,7 @@ html[data-theme="dark"] .site-nav-drawer ul li a[aria-current="page"]::before {
 
   /* ダークモード全画面 */
   html[data-theme="dark"] .site-nav-drawer {
-    background: rgba(8, 8, 8, 0.94);
+    background: rgba(8, 8, 8, 0.65);
   }
 }
 
