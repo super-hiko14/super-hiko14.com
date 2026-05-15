@@ -2169,20 +2169,19 @@ html[data-theme="dark"] .link-card:hover .link-card-arrow {
 .profile-social-list {
   display: flex;
   flex-direction: column;
-  width: min(520px, 94vw); /* 広めに少し調整 */
+  width: min(520px, 94vw);
   margin: 32px auto 0;
-  gap: 12px; /* カード間に隙間 */
-  padding: 0; /* 余計なパディングをリセット */
+  gap: 12px;
+  padding: 0;
 }
 
 .social-card {
   display: flex;
   align-items: center;
   gap: 16px;
-  padding: 18px 20px; /* 余白を左右に広げる */
-  border: 1px solid rgba(0, 0, 0, 0.04); /* 全体を囲う */
-  border-radius: 24px; /* 角を丸く */
-  background: rgba(255, 255, 255, 0.1);
+  padding: 24px 26px;
+  border-radius: 24px;
+  background: rgba(235, 235, 235, 0.5);
   color: inherit;
   text-decoration: none;
   position: relative;
@@ -2203,14 +2202,6 @@ html[data-theme="dark"] .link-card:hover .link-card-arrow {
 /* SNSカードのスタッガー登場 */
 .box.is-visible .social-card:nth-child(n) { transition-delay: 0s; }
 
-.profile-social-list .social-card:first-child {
-  border-top: 1px solid rgba(0, 0, 0, 0.04);
-}
-
-.profile-social-list .social-card:first-child:hover {
-  border-top-color: rgba(39, 87, 102, 0.3);
-}
-
 .social-card::after {
   content: '';
   position: absolute;
@@ -2228,7 +2219,7 @@ html[data-theme="dark"] .link-card:hover .link-card-arrow {
 
 .social-card:hover {
   transform: translateY(-6px) scale(1.02); /* 少し浮かせて拡大 */
-  background: rgba(0, 0, 0, 0.01);
+  background: rgba(0, 0, 0, 0.05);
   border-color: rgba(39, 87, 102, 0.3);
 }
 
@@ -2267,18 +2258,25 @@ html[data-theme="dark"] .link-card:hover .link-card-arrow {
   flex: 1;
   min-width: 0;
   text-align: left;
-  display: flex;
-  flex-direction: column;
-  gap: 3px;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  grid-template-rows: auto auto;
+  column-gap: 10px;
+  row-gap: 3px;
+  align-items: center;
 }
 
 .social-card-name {
+  grid-column: 1;
+  grid-row: 1;
   font-size: 1.05rem; /* ちょっとだけ大きく */
   font-weight: 600;
   line-height: 1.2;
 }
 
 .social-card-handle {
+  grid-column: 1;
+  grid-row: 2;
   font-family: 'Jost', 'zenkaku' monospace;
   font-size: 0.82rem; /* 少し大きく */
   color: #adb5bd;
@@ -2290,10 +2288,14 @@ html[data-theme="dark"] .link-card:hover .link-card-arrow {
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  margin-top: 5px;
-  font-size: 0.72rem;
-  color: #adb5bd;
-  letter-spacing: 0.01em;
+  margin-top: 0;
+  font-size: 0.7rem;
+  color: #b6bcc2;
+  letter-spacing: 0.02em;
+  grid-column: 2;
+  grid-row: 1 / span 2;
+  align-self: center;
+  justify-self: start;
 }
 
 .discord-stat {
@@ -2327,10 +2329,14 @@ html[data-theme="dark"] .discord-stat-sep {
   display: inline-flex;
   align-items: center;
   gap: 4px;
-  margin-top: 5px;
-  font-size: 0.72rem;
-  color: #adb5bd;
-  letter-spacing: 0.01em;
+  margin-top: 0;
+  font-size: 0.7rem;
+  color: #b6bcc2;
+  letter-spacing: 0.02em;
+  grid-column: 2;
+  grid-row: 1 / span 2;
+  align-self: center;
+  justify-self: start;
 }
 
 .yt-stats-icon {
@@ -2349,10 +2355,14 @@ html[data-theme="dark"] .yt-stats {
   display: inline-flex;
   align-items: center;
   gap: 4px;
-  margin-top: 5px;
-  font-size: 0.72rem;
-  color: #adb5bd;
-  letter-spacing: 0.01em;
+  margin-top: 0;
+  font-size: 0.7rem;
+  color: #b6bcc2;
+  letter-spacing: 0.02em;
+  grid-column: 2;
+  grid-row: 1 / span 2;
+  align-self: center;
+  justify-self: start;
 }
 
 .misskey-stats-icon {
@@ -2621,7 +2631,7 @@ html[data-theme="dark"] .social-card:hover .social-card-arrow {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  position: relative; /* ポップオーバーの基準 */
+  position: relative;
 }
 
 .calendar {
@@ -2698,7 +2708,7 @@ html[data-theme="light"] .calendar-legend-popover {
 
   .social-card {
     gap: 12px;
-    padding: 16px 20px; /* 右側の余白をしっかり確保 */
+    padding: 20px 24px; /* 右側の余白をしっかり確保 */
     width: 100%;
     box-sizing: border-box;
     border-radius: 24px;
@@ -3381,9 +3391,9 @@ html[data-theme="dark"] .form-status--error {
   text-decoration: none;
   gap: 8px;
   transition: background 0.18s ease, color 0.18s ease, transform 0.18s ease;
+  border-radius: 24px;
 }
 
-/* 番号（CSSカウンター） */
 .site-nav-drawer > ul > li > a::before {
   content: counter(nav-num, decimal-leading-zero);
   font-size: 0.62rem;
@@ -3549,13 +3559,14 @@ html[data-theme="dark"] .site-nav-drawer > ul > li > a[aria-current="page"]:hove
   list-style: none;
   margin: 0;
   padding: 0;
-  background: rgba(0, 0, 0, 0.01);
   max-height: 0;
   overflow: hidden;
   transform: translateY(-6px);
   pointer-events: none;
   transition: max-height 0.34s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.26s ease, transform 0.34s cubic-bezier(0.22, 1, 0.36, 1), padding 0.34s cubic-bezier(0.22, 1, 0.36, 1);
   opacity: 0;
+  border-bottom-right-radius: 24px;
+  border-bottom-left-radius: 24px;
 }
 
 .site-nav-submenu.is-open {
@@ -3602,10 +3613,6 @@ html[data-theme="dark"] .site-nav-drawer > ul > li > a[aria-current="page"]:hove
   background: rgba(39, 87, 102, 0.08);
   color: #275766;
   transform: translateX(2px);
-}
-
-html[data-theme="dark"] .site-nav-submenu {
-  background: rgba(255, 255, 255, 0.02);
 }
 
 html[data-theme="dark"] .site-nav-submenu li a {

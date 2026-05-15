@@ -151,7 +151,7 @@
             <span class="social-card-handle">@super-hiko14</span>
             <span class="yt-stats" id="yt-stats-hiko" style="display:none">
               <svg class="yt-stats-icon" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/></svg>
-              <span id="yt-subs-hiko">-</span>Subscribers
+              <span id="yt-subs-hiko">-</span>Subs
             </span>
           </div>
           <span class="social-card-arrow"><svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M7 17L17 7M17 7H7M17 7V17" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
@@ -165,7 +165,7 @@
             <span class="social-card-handle">@KokyuJene</span>
             <span class="misskey-stats" id="misskey-stats" style="display:none">
               <svg class="misskey-stats-icon" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
-              <span id="misskey-followers">-</span>Followers
+              <span id="misskey-followers">-</span>F
             </span>
           </div>
           <span class="social-card-arrow"><svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M7 17L17 7M17 7H7M17 7V17" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
@@ -311,7 +311,7 @@
             }
             window._refreshGitHubCalendar = function() {
               var dark = document.documentElement.getAttribute('data-theme') === 'dark';
-              fetch('https://github-contributions-api.jogruber.de/v4/KokyuJene?y=last')
+              fetch('https://github-contributions-api.jogruber.de/v4/super-hiko14?y=last')
                 .then(function(r) { return r.json(); })
                 .then(function(data) {
                   var all = data.contributions || [];
@@ -367,7 +367,7 @@
             <span class="social-card-handle">@KokyuJene</span>
             <span class="yt-stats" id="yt-stats-kj" style="display:none">
               <svg class="yt-stats-icon" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/></svg>
-              <span id="yt-subs-kj">-</span>Subscribers
+              <span id="yt-subs-kj">-</span>Subs
             </span>
           </div>
           <span class="social-card-arrow"><svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M7 17L17 7M17 7H7M17 7V17" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
@@ -404,11 +404,11 @@
               <span class="discord-stats" id="discord-stats" aria-label="Discordサーバー人数" style="display:none">
                 <span class="discord-stat discord-stat--online">
                   <span class="discord-stat-dot"></span>
-                  <span id="discord-online">-</span>Online
+                  <span id="discord-online">-</span>
                 </span>
                 <span class="discord-stat-sep">·</span>
                 <span class="discord-stat discord-stat--total">
-                  <span id="discord-total">-</span>Members
+                  <span id="discord-total">-</span>
                 </span>
               </span>
             </div>
