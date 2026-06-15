@@ -89,9 +89,6 @@ document.addEventListener('DOMContentLoaded', () => {
   // Scroll to top functionality
   initScrollToTop();
 
-  // Birthday section initialization
-  initBirthday();
-
   // Misskey follower count
   initMisskeyFollowers();
 
@@ -134,6 +131,9 @@ document.addEventListener('DOMContentLoaded', () => {
   if (document.body.classList.contains('diary-page')) {
     initDiaryPage();
   }
+
+  // Replace arrow characters with SVG
+  initArrowReplacer();
 });
 
 function initAboutTabs() {
@@ -378,90 +378,103 @@ function initSiteNav() {
   if (!toggle || !drawer || !nav) return;
   let lockedScrollY = 0;
 
-  /* ---------- Submenu data for each site ---------- */
-  const SUBMENU_DATA = {
-    'super-hiko14.com': [
-      { label: 'Contact', url: 'https://super-hiko14.com/contact/' }
-    ],
-    'about.super-hiko14.com': [
-    ],
-    'tools.super-hiko14.com': [
-      { label: 'Base64', url: 'https://tools.super-hiko14.com/base64/' },
-      { label: 'Calendar(alpha)', url: 'https://tools.super-hiko14.com/calendar/' },
-      { label: 'Clock(beta)', url: 'https://tools.super-hiko14.com/clock/' },
-      { label: 'Memo', url: 'https://tools.super-hiko14.com/memo/' },
-      { label: 'Polygon', url: 'https://tools.super-hiko14.com/polygon/' },
-      { label: 'Old:Study', url: 'https://tools.super-hiko14.com/study/' }
-    ],
-    'kokyujene.super-hiko14.com': [
-      { label: 'HOME', url: 'https://kokyujene.super-hiko14.com/' },
-      { label: 'MEMBERS', url: 'https://kokyujene.super-hiko14.com/members' },
-      { label: 'RULES', url: 'https://kokyujene.super-hiko14.com/rules' },
-      { label: 'NEWS', url: 'https://kokyujene.super-hiko14.com/news' }
-    ],
-    'super-hiko14.me': [
-      { label: 'Home', url: 'https://super-hiko14.me/' },
-      { label: 'Diary', url: 'https://super-hiko14.me/diary/' }
-    ],
-    'legal.super-hiko14.com': [
-      { label: 'Privacy Policy', url: 'https://legal.super-hiko14.com/privacypolicy/' },
-      { label: 'Terms', url: 'https://legal.super-hiko14.com/terms/' },
-      { label: 'Auth Privacy Policy', url: 'https://legal.super-hiko14.com/auth/privacypolicy/' },
-      { label: 'Auth Terms', url: 'https://legal.super-hiko14.com/auth/terms/' }
-    ]
-  };
+  const NAV_ITEMS = [
+    {
+      title: 'ホーム',
+      url: 'https://super-hiko14.com/',
+    },
+    { title: 'お問い合わせ',
+      url: 'https://super-hiko14.com/contact/'
+    },
+    {
+      title: '物置',
+      url: 'https://super-hiko14.com/monooki/',
+    },
+    {
+      title: '高級ジェネ™',
+      url: 'https://kokyujene.super-hiko14.com/',
+      submenu: [
+        { label: 'HOME', url: 'https://kokyujene.super-hiko14.com/' },
+        { label: 'MEMBERS', url: 'https://kokyujene.super-hiko14.com/members' },
+        { label: 'RULES', url: 'https://kokyujene.super-hiko14.com/rules' },
+        { label: 'NEWS', url: 'https://kokyujene.super-hiko14.com/news' }
+      ]
+    },
+    {
+      title: '日記',
+      url: 'https://super-hiko14.me/diary/',
+    },
+    {
+      title: '法務',
+      url: 'https://legal.super-hiko14.com/',
+      submenu: [
+        { label: 'プライバシーポリシー', url: 'https://legal.super-hiko14.com/privacypolicy/' },
+        { label: '利用規約', url: 'https://legal.super-hiko14.com/terms/' },
+      ]
+    }
+  ];
+
+  function buildNavItem(item) {
+    const li = document.createElement('li');
+    const link = document.createElement('a');
+    link.href = item.url;
+
+    const textWrap = document.createElement('span');
+    textWrap.className = 'site-nav-item-text';
+
+    const title = document.createElement('span');
+    title.className = 'site-nav-item-title';
+    title.textContent = item.title;
+
+    const arrow = document.createElement('span');
+    arrow.className = 'site-nav-item-arrow';
+    arrow.textContent = '→';
+
+    textWrap.appendChild(title);
+    link.appendChild(textWrap);
+    link.appendChild(arrow);
+    li.appendChild(link);
+
+    if (Array.isArray(item.submenu) && item.submenu.length > 0) {
+      const submenuEl = document.createElement('ul');
+      submenuEl.className = 'site-nav-submenu';
+      submenuEl.setAttribute('aria-hidden', 'true');
+      item.submenu.forEach((sub) => {
+        const subLi = document.createElement('li');
+        const subLink = document.createElement('a');
+        subLink.href = sub.url;
+        subLink.textContent = sub.label;
+        subLi.appendChild(subLink);
+        submenuEl.appendChild(subLi);
+      });
+      li.appendChild(submenuEl);
+    }
+    return li;
+  }
+
+  const navList = drawer.querySelector('ul') || drawer.appendChild(document.createElement('ul'));
+  navList.innerHTML = '';
+  NAV_ITEMS.forEach((item) => {
+    navList.appendChild(buildNavItem(item));
+  });
 
   /* ---------- inject backdrop ---------- */
   const backdrop = document.createElement('div');
   backdrop.className = 'site-nav-backdrop';
   backdrop.setAttribute('aria-hidden', 'true');
   document.body.appendChild(backdrop);
-
-  /* ---------- inject drawer header ---------- */
-  const drawerHeader = document.createElement('div');
-  drawerHeader.className = 'site-nav-drawer-header';
-  drawerHeader.innerHTML =
-    '<span class="site-nav-drawer-brand">' +
-      '<svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">' +
-        '<path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"/>' +
-      '</svg>' +
-      'Navigation' +
-    '</span>';
-  drawer.insertBefore(drawerHeader, drawer.firstChild);
-
-  /* ---------- inject icons per nav item ---------- */
-  const ICON_MAP = {
-    'super-hiko14.com':        '<path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>',
-    'about.super-hiko14.com':  '<path d="M11 17h2v-6h-2v6zm1-15C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zM11 9h2V7h-2v2z"/>',
-    'kokyujene.super-hiko14.com': '<path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/>',
-    'tools.super-hiko14.com':  '<path d="M22.7 19l-9.1-9.1c.9-2.3.4-5-1.5-6.9-2-2-5-2.4-7.4-1.3L9 6 6 9 1.6 4.7C.4 7.1.9 10.1 2.9 12.1c1.9 1.9 4.6 2.4 6.9 1.5l9.1 9.1c.4.4 1 .4 1.4 0l2.3-2.3c.5-.4.5-1.1.1-1.4z"/>',
-    'super-hiko14.me':         '<path d="M18 2h-2V1c0-.6-.4-1-1-1s-1 .4-1 1v1H9V1c0-.6-.4-1-1-1S7 .4 7 1v1H5C3.9 2 3 2.9 3 4v16c0 1.1.9 2 2 2h13c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm0 18H5V8h13v12zM7 10h5v5H7z"/>',
-    'legal.super-hiko14.com':  '<path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm0 4l5 2.18V11c0 3.5-2.33 6.79-5 7.93-2.67-1.14-5-4.43-5-7.93V7.18L12 5z"/>',
-  };
   
   // SVG arrow definitions
   const downArrowSvg = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="14" height="14"><path d="M 6 9 L 12 15 L 18 9" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>';
   const rightArrowSvg = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="14" height="14"><path d="M 9 6 L 15 12 L 9 18" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>';
 
-  drawer.querySelectorAll('a[href]').forEach(link => {
-    try {
-      const host = new URL(link.href).hostname;
-      const path = ICON_MAP[host];
-      if (!path) return;
-      const iconEl = document.createElement('span');
-      iconEl.className = 'site-nav-item-icon';
-      iconEl.setAttribute('aria-hidden', 'true');
-      iconEl.innerHTML =
-        '<svg viewBox="0 0 24 24" fill="currentColor" width="13" height="13">' + path + '</svg>';
-      link.insertBefore(iconEl, link.firstChild);
-    } catch (_) {}
-  });
-
-  // Convert arrow text to SVG
+  // Convert arrow text to SVG: submenu がある場合は下向き矢印、無ければ横向き矢印
   const arrows = drawer.querySelectorAll('.site-nav-item-arrow');
   arrows.forEach((arrowEl) => {
     if (!arrowEl) return;
-    arrowEl.innerHTML = downArrowSvg;
+    const li = arrowEl.closest('li');
+    const hasSub = li && li.querySelector('.site-nav-submenu');
+    arrowEl.innerHTML = hasSub ? downArrowSvg : rightArrowSvg;
     arrowEl.style.display = 'inline-flex';
   });
 
@@ -556,12 +569,11 @@ function initSiteNav() {
     drawer.querySelectorAll('a[href]').forEach(link => {
       try {
         const linkUrl = new URL(link.href);
-        const linkHost = linkUrl.hostname;
         const linkLi = link.closest('li');
         const arrowEl = link.querySelector('.site-nav-item-arrow');
         
         // Check if this is the current domain
-        const isCurrentDomain = linkHost === currentHost;
+        const isCurrentDomain = linkUrl.hostname === currentHost;
         
         if (isCurrentDomain) {
           link.setAttribute('aria-current', 'page');
@@ -575,44 +587,20 @@ function initSiteNav() {
         }
         
         // Setup accordion for links with submenu
-        const submenu = SUBMENU_DATA[linkHost];
-        if (submenu && submenu.length > 0 && linkLi && arrowEl) {
-          // Has submenu: use down arrow
+        const submenuEl = linkLi ? linkLi.querySelector('.site-nav-submenu') : null;
+        if (submenuEl && arrowEl) {
           arrowEl.innerHTML = downArrowSvg;
           arrowEl.style.display = 'inline-flex';
-          
-          // Create submenu container
-          let submenuEl = linkLi.querySelector('.site-nav-submenu');
-          if (!submenuEl) {
-            submenuEl = document.createElement('ul');
-            submenuEl.className = 'site-nav-submenu';
-            submenuEl.setAttribute('aria-hidden', 'true');
-            linkLi.appendChild(submenuEl);
-            
-            // Add submenu items
-            submenu.forEach(item => {
-              const li = document.createElement('li');
-              const a = document.createElement('a');
-              a.href = item.url;
-              a.textContent = item.label;
-              li.appendChild(a);
-              submenuEl.appendChild(li);
-            });
-          }
-          
-          // Make arrow toggle submenu (always clickable for submenu)
           arrowEl.style.cursor = 'pointer';
           arrowEl.addEventListener('click', (e) => {
             e.preventDefault();
             e.stopPropagation();
             const isOpen = submenuEl.classList.contains('is-open');
             if (!isOpen) {
-              // Open
               submenuEl.classList.add('is-open');
               submenuEl.setAttribute('aria-hidden', 'false');
               arrowEl.classList.add('is-open');
             } else {
-              // Close
               submenuEl.classList.remove('is-open');
               submenuEl.setAttribute('aria-hidden', 'true');
               arrowEl.classList.remove('is-open');
@@ -713,66 +701,6 @@ function initSiteNav() {
   setTimeout(() => { nav.style.transition = 'none'; }, 580);
 }
 
-// Birthday section initialization
-function initBirthday() {
-  const birthdaySection = document.querySelector('.birthday-section');
-  if (!birthdaySection) return;
-
-  // Get birthday month/day from data attributes (default: 12/31)
-  const birthdayMonth = parseInt(birthdaySection.getAttribute('data-birthday-month')) || 12;
-  const birthdayDay = parseInt(birthdaySection.getAttribute('data-birthday-day')) || 31;
-
-  const todayDateEl = document.getElementById('today-date');
-  const birthdayMessageEl = document.getElementById('birthday-message');
-  const daysCounterEl = document.getElementById('days-counter');
-
-  function updateBirthdayInfo() {
-    const today = new Date();
-    const currentYear = today.getFullYear();
-    const currentMonth = today.getMonth() + 1;
-    const currentDay = today.getDate();
-
-    // Format today's date
-    const monthNames = ['1月', '2月', '3月', '4月', '5月', '6月', '7月', '8月', '9月', '10月', '11月', '12月'];
-    const dayOfWeek = ['日', '月', '火', '水', '木', '金', '土'];
-    const todayFormatted = `${currentYear}年 ${monthNames[today.getMonth()]} ${currentDay}日 (${dayOfWeek[today.getDay()]})`;
-    todayDateEl.textContent = todayFormatted;
-
-    // Check if today is the birthday
-    const isBirthday = currentMonth === birthdayMonth && currentDay === birthdayDay;
-
-    if (isBirthday) {
-      // Today is the birthday!
-      birthdayMessageEl.innerHTML = '🎉 <strong>本日は誕生日です！おめでとうございます！</strong> 🎉';
-      birthdayMessageEl.style.fontSize = '1.2rem';
-      birthdayMessageEl.style.fontWeight = 'bold';
-      daysCounterEl.textContent = '今日があなたの特別な日です。最高の1日を過ごしてください！';
-    } else {
-      // Calculate days until the next birthday
-      let nextBirthdayDate = new Date(currentYear, birthdayMonth - 1, birthdayDay);
-      
-      // If the birthday has already passed this year, calculate for next year
-      if (nextBirthdayDate < today) {
-        nextBirthdayDate = new Date(currentYear + 1, birthdayMonth - 1, birthdayDay);
-      }
-
-      const timeDiff = nextBirthdayDate.getTime() - today.getTime();
-      const daysLeft = Math.ceil(timeDiff / (1000 * 60 * 60 * 24));
-
-      const nextBirthdayFormatted = `${nextBirthdayDate.getFullYear()}年 ${monthNames[nextBirthdayDate.getMonth()]} ${nextBirthdayDate.getDate()}日`;
-      
-      birthdayMessageEl.textContent = `次の誕生日は ${nextBirthdayFormatted} です。`;
-      daysCounterEl.textContent = `あと ${daysLeft} 日です。`;
-    }
-  }
-
-  // Initial update
-  updateBirthdayInfo();
-
-  // Update at midnight
-  setTimeout(updateBirthdayInfo, (24 - new Date().getHours()) * 60 * 60 * 1000);
-}
-
 function initMisskeyFollowers() {
   const statsEl = document.getElementById('misskey-stats');
   const countEl = document.getElementById('misskey-followers');
@@ -790,4 +718,91 @@ function initMisskeyFollowers() {
       statsEl.style.display = '';
     })
     .catch(function() {});
+}
+
+function initArrowReplacer() {
+  const svgRight = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960" fill="currentColor" style="vertical-align: middle; display: inline-block; width: 1.3em; height: 1.3em;"><path d="M426-342v-276l138 138-138 138Z"/></svg>`;
+  const svgLeft  = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960" fill="currentColor" style="vertical-align: middle; display: inline-block; width: 1.3em; height: 1.3em;"><path d="M534-342 396-480l138-138v276Z"/></svg>`;
+
+  function replaceInNode(node) {
+    if (node.nodeType === Node.TEXT_NODE) {
+      const text = node.textContent;
+      
+      if (text.includes('→') || text.includes('←')) {
+        const parent = node.parentNode;
+        if (!parent) return;
+        
+        const ignoreTags = ['SCRIPT', 'STYLE', 'TEXTAREA', 'INPUT', 'PRE', 'CODE', 'SVG'];
+        if (ignoreTags.includes(parent.tagName) || parent.closest('.replaced-arrow-wrapper')) {
+          return;
+        }
+
+        const segments = text.split(/(→|←)/);
+        const fragment = document.createDocumentFragment();
+
+        segments.forEach((segment, idx) => {
+          if (!segment) return;
+
+          if (segment === '→' || segment === '←') {
+            // 矢印単体ではなく、その周囲を包むラッパーを作る
+            const wrapper = document.createElement('span');
+            wrapper.className = 'replaced-arrow-wrapper';
+            wrapper.style.whiteSpace = 'nowrap'; // ラッパー内（矢印＋直後の文字）の改行を禁止
+            wrapper.style.display = 'inline-flex';
+            wrapper.style.alignItems = 'center';
+            wrapper.style.verticalAlign = 'middle';
+
+            // SVG用のspan
+            const arrowSpan = document.createElement('span');
+            arrowSpan.style.display = 'inline-block';
+            arrowSpan.style.lineHeight = '1';
+            arrowSpan.innerHTML = (segment === '→') ? svgRight : svgLeft;
+            wrapper.appendChild(arrowSpan);
+
+            // 【ポイント】もし直後にテキスト（例：「戻る」）があれば、
+            // その最初の単語や文字がはぐれないよう、一部（または全部）をラッパーに巻き込む
+            const nextSegment = segments[idx + 1];
+            if (nextSegment && nextSegment !== '→' && nextSegment !== '←') {
+              // 直後のテキストの「最初の1文字（または単語）」を切り出してラッパーに入れる
+              // ここではシンプルに直後のテキストすべてを巻き込んで1行にします
+              wrapper.appendChild(document.createTextNode(nextSegment));
+              segments[idx + 1] = ''; // 巻き込んだ分、次のループ処理をスキップさせる
+            }
+
+            fragment.appendChild(wrapper);
+          } else {
+            fragment.appendChild(document.createTextNode(segment));
+          }
+        });
+        
+        parent.replaceChild(fragment, node);
+      }
+    } else if (node.nodeType === Node.ELEMENT_NODE) {
+      const ignoreTags = ['SCRIPT', 'STYLE', 'TEXTAREA', 'INPUT', 'PRE', 'CODE', 'SVG'];
+      if (ignoreTags.includes(node.tagName) || node.classList.contains('replaced-arrow-wrapper')) {
+        return;
+      }
+      const childNodes = Array.from(node.childNodes);
+      for (const child of childNodes) {
+        replaceInNode(child);
+      }
+    }
+  }
+
+  // 初回実行
+  replaceInNode(document.body);
+
+  // MutationObserverで動的追加されるノードを監視
+  const observer = new MutationObserver((mutations) => {
+    mutations.forEach((mutation) => {
+      mutation.addedNodes.forEach((node) => {
+        replaceInNode(node);
+      });
+    });
+  });
+
+  observer.observe(document.body, {
+    childList: true,
+    subtree: true
+  });
 }

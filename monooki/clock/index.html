@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>m3 clock</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Google+Sans+Flex:opsz,wght,GRAD@16..100,100..1000,0..100&display=swap"
+        rel="stylesheet">
+
+    <style>
+        :root {
+            --bg-color: #000000;
+            --face-color: #3c3c3c;
+            --hour-hand: #e1e1e1;
+            --minute-hand: #919191;
+            --second-dot: #7d7d7d;
+            --center-cap: #e1e1e1;
+            --transition-speed: 0.5s;
+        }
+
+        body.light-theme {
+            /* ライトモード */
+            --bg-color: #ffffff;
+            --face-color: #e0e0e0;
+            --hour-hand: #333333;
+            --minute-hand: #666666;
+            --second-dot: #999999;
+            --center-cap: #333333;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            transition: background-color var(--transition-speed), color var(--transition-speed);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            overflow: hidden;
+            gap: 20px;
+            font-family: 'Google Sans Flex', -apple-system, BlinkMacSystemFont, sans-serif;
+        }
+
+        .clock-container {
+            width: 75vmin;
+            height: 75vmin;
+            max-width: 400px;
+            max-height: 400px;
+            position: relative;
+        }
+
+        svg {
+            width: 100%;
+            height: 100%;
+        }
+
+        /* 外形のスカラップ形状：影なし、フラット */
+        .outer-shape {
+            fill: var(--face-color);
+            transition: fill var(--transition-speed);
+        }
+
+        /* 針：フラット、丸みのある先端 */
+        .hand {
+            stroke-linecap: round;
+            transform-origin: 100px 100px;
+        }
+
+        #hour {
+            stroke: var(--hour-hand);
+            stroke-width: 14;
+            transition: stroke var(--transition-speed);
+        }
+
+        #minute {
+            stroke: var(--minute-hand);
+            stroke-width: 14;
+            transition: stroke var(--transition-speed);
+        }
+
+        /* 秒のドット */
+        #second-dot {
+            fill: var(--second-dot);
+            transform-origin: 100px 100px;
+            transition: fill var(--transition-speed);
+        }
+
+        #digital-time {
+            color: var(--hour-hand);
+            font-size: 32px;
+            letter-spacing: 2px;
+            opacity: 0.9;
+            display: flex;
+            justify-content: center;
+            align-items: baseline;
+            transition: color var(--transition-speed);
+        }
+
+        .hm-wrapper {
+            position: relative;
+            display: inline-flex;
+            align-items: baseline;
+        }
+
+        #digital-time small {
+            position: absolute;
+            left: 100%;
+            bottom: 4px;
+            font-size: 20px;
+            opacity: 0.7;
+            white-space: nowrap;
+        }
+
+        #settings-panel {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 12px;
+            opacity: 0.1;
+            transition: opacity 0.3s ease;
+            z-index: 100;
+        }
+
+        #settings-panel:hover {
+            opacity: 0.8;
+        }
+
+        #theme-toggle {
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        #theme-toggle img {
+            width: 32px;
+            height: 32px;
+            object-fit: contain;
+        }
+
+        /* Toggle switch styles */
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 36px;
+            height: 20px;
+        }
+
+        .switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: var(--face-color);
+            transition: .4s;
+            border-radius: 20px;
+        }
+
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 14px;
+            width: 14px;
+            left: 3px;
+            bottom: 3px;
+            background-color: var(--hour-hand);
+            transition: .4s;
+            border-radius: 50%;
+        }
+
+        input:checked+.slider {
+            background-color: var(--second-dot);
+        }
+
+        input:checked+.slider:before {
+            transform: translateX(16px);
+        }
+    </style>
+</head>
+
+<body>
+    <div id="settings-panel">
+        <button id="theme-toggle" aria-label="テーマを切り替える">
+            <img id="theme-icon" src="https://tools.super-hiko14.com/study/sun.webp" alt="ダークモード">
+        </button>
+        <label class="switch" title="デジタル時計を表示/非表示">
+            <input type="checkbox" id="digital-toggle" checked>
+            <span class="slider"></span>
+        </label>
+    </div>
+
+    <div class="clock-container">
+        <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+            <!-- 円 -->
+            <circle cx="100" cy="100" r="95" class="outer-shape" />
+
+            <!-- 針 -->
+            <line id="hour" class="hand" x1="100" y1="100" x2="100" y2="70" />
+            <line id="minute" class="hand" x1="100" y1="100" x2="100" y2="45" />
+
+            <!-- 秒 -->
+            <circle id="second-dot" cx="100" cy="25" r="5" />
+        </svg>
+        <div id="digital-time"></div>
+    </div>
+
+    <script>
+
+        function update() {
+            const now = new Date();
+            const ms = now.getMilliseconds();
+            const s = now.getSeconds();
+            const m = now.getMinutes();
+            const h = now.getHours();
+
+            // 角度
+            const sDeg = (s * 6) + (ms * 0.006);
+            const mDeg = (m * 6) + (s * 0.1);
+            const hDeg = ((h % 12) * 30) + (m * 0.5);
+
+            document.getElementById('second-dot').style.transform = `rotate(${sDeg}deg)`;
+            document.getElementById('minute').style.transform = `rotate(${mDeg}deg)`;
+            document.getElementById('hour').style.transform = `rotate(${hDeg}deg)`;
+
+            const hh = h.toString().padStart(2, '0');
+            const mm = m.toString().padStart(2, '0');
+            const ss = s.toString().padStart(2, '0');
+            document.getElementById('digital-time').innerHTML = `<div class="hm-wrapper"><span>${hh}:${mm}</span><small>:${ss}</small></div>`;
+
+            requestAnimationFrame(update);
+        }
+
+        // テーマ切り替え設定
+        const themeToggle = document.getElementById('theme-toggle');
+        const themeIcon = document.getElementById('theme-icon');
+        const body = document.body;
+
+        const MOON_ICON = 'https://tools.super-hiko14.com/study/sun.webp';
+        const SUN_ICON = 'https://tools.super-hiko14.com/study/moon.webp';
+
+        // デジタル時刻トグル
+        const digitalToggle = document.getElementById('digital-toggle');
+        const digitalTime = document.getElementById('digital-time');
+
+        // 設定の読み込み
+        const savedTheme = localStorage.getItem('theme');
+        if (savedTheme === 'light-theme') {
+            body.classList.add('light-theme');
+            themeIcon.src = SUN_ICON;
+            themeIcon.alt = 'ライトモード';
+        }
+
+        const savedDigitalVisible = localStorage.getItem('digitalVisible');
+        if (savedDigitalVisible === 'false') {
+            digitalToggle.checked = false;
+            digitalTime.style.display = 'none';
+        }
+
+        themeToggle.addEventListener('click', () => {
+            body.classList.toggle('light-theme');
+            const isLight = body.classList.contains('light-theme');
+
+            if (isLight) {
+                themeIcon.src = SUN_ICON;
+                themeIcon.alt = 'ライトモード';
+                localStorage.setItem('theme', 'light-theme');
+            } else {
+                themeIcon.src = MOON_ICON;
+                themeIcon.alt = 'ダークモード';
+                localStorage.setItem('theme', 'dark-theme');
+            }
+        });
+
+        digitalToggle.addEventListener('change', () => {
+            const isVisible = digitalToggle.checked;
+            digitalTime.style.display = isVisible ? 'flex' : 'none';
+            localStorage.setItem('digitalVisible', isVisible);
+        });
+
+        update();
+    </script>
+</body>
+
+</html>
+<!-- 一部AIが使用されています -->
+<!-- Made by Super Hiko14 -->
+<!-- https://about.super-hiko14.com/super-hiko14/ -->
+
+<!-- つか お前よくここまで見るな -->
+<!-- 知識ある側だろお前 -->
+<!-- まあ...うん。 -->
+<!-- フォントとか変えるぐらいなら好きにしたらいい -->
+<!-- 二次配布/自作発言はやめてね -->
+<!-- Super Hiko14が作ったんだからな!!!! -->
+<!-- じゃあね -->
+
+<!-- License -->
+<!-- FONTS: Google Sans Flex -->
+<!-- IMAGES: Visual assets -->
+
+<!-- © 2026 Super Hiko14 All rights reserved -->

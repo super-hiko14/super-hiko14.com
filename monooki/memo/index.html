@@ -1,0 +1,2190 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>文綴</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="icon" href="memo_icons.png">
+<link rel="icon" type="image/png" href="memo_icons.png">
+<link rel="apple-touch-icon" sizes="1440×1440" href="memo_icons.png">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@300;400;500;700&family=Shippori+Mincho:wght@400;500;700&family=Zen+Kaku+Gothic+New:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --paper:#F7F5F0; --paper2:#F0EDE6;
+  --ink:#2A2820;   --ink2:#7A7670;
+  --ink3:#B8B4AC;  --ink4:#D8D4CC; --line:#E8E4DC;
+  --hover:rgba(42,40,32,.05); --active:rgba(42,40,32,.10);
+  --shadow:rgba(42,40,32,.12); --acc-fg:#F7F5F0;
+  --ui-font:'Zen Kaku Gothic New',sans-serif;
+  --ed-font:'Noto Serif JP',serif;
+  --nav-w:56px;
+  --ease:cubic-bezier(.4,0,.2,1);
+  --safe-b: env(safe-area-inset-bottom, 0px);
+  --safe-l: env(safe-area-inset-left, 0px);
+}
+
+/* ── Light themes ── */
+[data-theme="parchment"]{--paper:#F7F5F0;--paper2:#F0EDE6;--ink:#2A2820;--ink2:#7A7670;--ink3:#B8B4AC;--ink4:#D8D4CC;--line:#E8E4DC;--hover:rgba(42,40,32,.05);--active:rgba(42,40,32,.10);--shadow:rgba(42,40,32,.12);--acc-fg:#F7F5F0;}
+[data-theme="moss"]     {--paper:#F2F5EE;--paper2:#E8EDE2;--ink:#283020;--ink2:#6A7860;--ink3:#AAB4A0;--ink4:#C8D0C0;--line:#DDE4D5;--hover:rgba(40,48,32,.05);--active:rgba(40,48,32,.10);--shadow:rgba(40,48,32,.12);--acc-fg:#F2F5EE;}
+[data-theme="rose"]     {--paper:#FDF6F5;--paper2:#F8EDEB;--ink:#2C1A18;--ink2:#907070;--ink3:#C4A8A5;--ink4:#DECDCA;--line:#EEE0DD;--hover:rgba(44,26,24,.05);--active:rgba(44,26,24,.10);--shadow:rgba(44,26,24,.10);--acc-fg:#FDF6F5;}
+[data-theme="slate"]    {--paper:#EEF0F8;--paper2:#E4E8F4;--ink:#1C2040;--ink2:#606888;--ink3:#A8B0CC;--ink4:#C8CCE0;--line:#D8DCF0;--hover:rgba(28,32,64,.05);--active:rgba(28,32,64,.10);--shadow:rgba(28,32,64,.12);--acc-fg:#EEF0F8;}
+[data-theme="mono"]     {--paper:#F5F5F5;--paper2:#EBEBEB;--ink:#141414;--ink2:#707070;--ink3:#B0B0B0;--ink4:#D0D0D0;--line:#E2E2E2;--hover:rgba(20,20,20,.05);--active:rgba(20,20,20,.10);--shadow:rgba(20,20,20,.12);--acc-fg:#F5F5F5;}
+
+/* ── Dark mode overlay ── */
+body.dark {
+  --paper:#141310;  --paper2:#1C1A16;
+  --ink:#E4E0D4;    --ink2:#686460;
+  --ink3:#38362E;   --ink4:#2A2820; --line:#222018;
+  --hover:rgba(228,224,212,.05); --active:rgba(228,224,212,.10);
+  --shadow:rgba(0,0,0,.5); --acc-fg:#141310;
+}
+/* Dark per-theme tints */
+body.dark[data-theme="moss"]  {--paper:#0E1210;--paper2:#141A12;--ink:#C0CEB8;--ink2:#526050;--line:#1A2018;}
+body.dark[data-theme="rose"]  {--paper:#160E0C;--paper2:#1E1412;--ink:#E0C8C4;--ink2:#785858;--line:#221614;}
+body.dark[data-theme="slate"] {--paper:#0C0E1C;--paper2:#121628;--ink:#B8C0E0;--ink2:#505878;--line:#181C30;}
+body.dark[data-theme="mono"]  {--paper:#101010;--paper2:#181818;--ink:#E0E0E0;--ink2:#606060;--line:#1E1E1E;}
+
+body {
+  font-family: var(--ui-font);
+  background: var(--paper); color: var(--ink);
+  height: 100dvh; display: flex; overflow: hidden;
+  transition: background .35s var(--ease), color .35s var(--ease);
+}
+
+/* ══════════════════════════════════════
+   DESKTOP LAYOUT
+   ══════════════════════════════════════ */
+#nav {
+  width: var(--nav-w); flex-shrink: 0; height: 100%;
+  display: flex; flex-direction: column; align-items: center;
+  padding: 20px 0; border-right: 1px solid var(--line);
+  background: var(--paper2);
+  transition: background .35s var(--ease), border-color .35s var(--ease);
+  z-index: 10; overflow: hidden;
+}
+
+.nav-logo {
+  font-size: 17px; font-weight: 700; color: var(--ink);
+  margin-bottom: 22px; flex-shrink: 0;
+  font-family: 'Shippori Mincho', serif; user-select: none;
+}
+
+#nav-pages {
+  flex: 1; overflow-y: auto; overflow-x: hidden;
+  width: 100%; display: flex; flex-direction: column;
+  align-items: center; gap: 3px; padding: 4px 9px;
+}
+#nav-pages::-webkit-scrollbar { width: 0; }
+
+.nav-page-wrap { width: 38px; position: relative; flex-shrink: 0; }
+
+.nav-dot {
+  width: 100%; height: 38px; border-radius: 24px;
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer; transition: background .15s, color .15s;
+  position: relative; color: var(--ink3);
+  border: none; background: none;
+}
+.nav-dot:hover { background: var(--hover); color: var(--ink2); }
+.nav-dot.active { background: var(--active); color: var(--ink); }
+.nav-dot.active::before {
+  content: ''; position: absolute; left: -9px; top: 50%;
+  transform: translateY(-50%); width: 2px; height: 16px;
+  background: var(--ink); border-radius: 1px;
+}
+
+/* Tooltip */
+.tip-r::after {
+  content: attr(data-tip);
+  position: absolute; left: calc(100% + 12px); top: 50%;
+  transform: translateY(-50%);
+  background: var(--ink); color: var(--acc-fg);
+  font-size: 11px; font-family: var(--ui-font);
+  white-space: nowrap; padding: 5px 10px; border-radius: 24px;
+  pointer-events: none; opacity: 0; transition: opacity .12s .4s;
+  max-width: 200px; overflow: hidden; text-overflow: ellipsis; z-index: 200;
+}
+.tip-r:hover::after { opacity: 1; }
+
+/* Desktop Page Popover with Trash */
+#page-popover {
+  position: fixed;
+  transform: translateY(-50%);
+  background: var(--ink); color: var(--acc-fg);
+  border-radius: 24px;
+  display: flex; align-items: center; gap: 8px;
+  padding: 4px 4px 4px 14px;
+  box-shadow: 0 4px 12px var(--shadow);
+  opacity: 0; pointer-events: none;
+  transition: opacity .15s;
+  z-index: 1000;
+}
+#page-popover.show {
+  opacity: 1; pointer-events: all;
+}
+#page-popover::before {
+  content: '';
+  position: absolute;
+  left: -16px; top: 0; bottom: 0; width: 16px;
+  background: transparent;
+}
+.nav-popover-title {
+  font-size: 11px; font-family: var(--ui-font);
+  white-space: nowrap; max-width: 160px;
+  overflow: hidden; text-overflow: ellipsis;
+  cursor: pointer;
+}
+.nav-popover-trash {
+  width: 24px; height: 24px; border-radius: 50%;
+  border: none; background: rgba(255,255,255,0.15);
+  display: flex; align-items: center; justify-content: center;
+  color: var(--acc-fg); cursor: pointer;
+  transition: background .15s, color .15s;
+  flex-shrink: 0;
+}
+.nav-popover-trash:hover {
+  background: #C0392B; color: #fff;
+}
+body.dark .nav-popover-trash {
+  background: rgba(0,0,0,0.12);
+}
+body.dark .nav-popover-trash:hover {
+  background: #C0392B; color: #fff;
+}
+
+/* Drag & Drop */
+.nav-page-wrap.dragging { opacity: 0.2; }
+.mpl-item.dragging { opacity: 0.4; }
+.nav-page-wrap.drop-target-above::before,
+.nav-page-wrap.drop-target-below::after {
+  content: ''; position: absolute; left: 0; right: 0;
+  height: 2px; background: var(--ink); z-index: 10; border-radius: 1px;
+}
+.nav-page-wrap.drop-target-above::before { top: -2px; }
+.nav-page-wrap.drop-target-below::after { bottom: -2px; }
+
+.mpl-item.drag-over { position: relative; }
+.mpl-item.drag-over::before {
+  content: ''; position: absolute; top: -2px; left: 12px; right: 12px;
+  height: 2px; background: var(--ink); z-index: 10; border-radius: 1px;
+}
+
+#nav-add {
+  width: 38px; height: 38px; margin: 2px 9px 0;
+  border-radius: 24px; border: 1.5px dashed var(--ink4);
+  background: none; cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  color: var(--ink3); flex-shrink: 0;
+  transition: border-color .15s, color .15s, background .15s; position: relative;
+}
+#nav-add:hover { border-color: var(--ink2); color: var(--ink2); background: var(--hover); }
+#nav-add::after {
+  content: '新しい記録';
+  position: absolute; left: calc(100% + 12px); top: 50%;
+  transform: translateY(-50%);
+  background: var(--ink); color: var(--acc-fg);
+  font-size: 11px; font-family: var(--ui-font);
+  white-space: nowrap; padding: 5px 10px; border-radius: 24px;
+  pointer-events: none; opacity: 0; transition: opacity .12s .4s; z-index: 200;
+}
+#nav-add:hover::after { opacity: 1; }
+
+#nav-bottom {
+  display: flex; flex-direction: column; align-items: center;
+  gap: 3px; padding: 10px 9px 0;
+  border-top: 1px solid var(--line); margin-top: 8px; width: 100%;
+}
+
+.nav-icon-btn {
+  width: 38px; height: 38px; border-radius: 24px;
+  border: none; background: none; cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  color: var(--ink2); transition: background .15s, color .15s; position: relative;
+}
+.nav-icon-btn:hover { background: var(--hover); color: var(--ink); }
+
+/* ── Main ── */
+#main { flex: 1; display: flex; flex-direction: column; min-width: 0; height: 100%; position: relative; }
+
+/* ── Top bar ── */
+#topbar {
+  position: absolute; top: 0; left: 0; right: 0; height: 44px;
+  display: flex; align-items: center; padding: 0 22px; z-index: 20; gap: 0;
+  pointer-events: none;
+}
+
+#status-left {
+  display: flex; align-items: center; gap: 9px; pointer-events: none;
+}
+.sb-item { font-size: 10px; letter-spacing: .06em; color: var(--ink3); font-family: var(--ui-font); }
+#save-indicator { font-size: 10px; letter-spacing: .1em; color: var(--ink3); opacity: 0; transition: opacity .4s; font-family: var(--ui-font); }
+#save-indicator.show { opacity: 1; }
+.sb-sep { width: 1px; height: 9px; background: var(--line); flex-shrink: 0; }
+
+#fmt-bar {
+  margin-left: auto;
+  display: flex; align-items: center; gap: 1px; pointer-events: all;
+}
+.fmt-btn {
+  height: 26px; min-width: 26px; padding: 0 6px;
+  border: none; background: none; cursor: pointer; border-radius: 24px;
+  color: var(--ink3); font-family: var(--ui-font); font-size: 11px;
+  display: flex; align-items: center; justify-content: center;
+  transition: background .12s, color .12s; line-height: 1; flex-shrink: 0;
+}
+.fmt-btn:hover { background: var(--hover); color: var(--ink2); }
+.fmt-btn:active { background: var(--active); }
+.fmt-btn.is-active { color: var(--ink); background: var(--active); }
+.fmt-sep2 { width: 1px; height: 12px; background: var(--line); margin: 0 2px; flex-shrink: 0; }
+
+/* ── Font chip ── */
+#font-chip {
+  position: absolute; bottom: 18px; right: 22px;
+  display: flex; align-items: center; gap: 6px;
+  padding: 4px 11px; border: 1px solid var(--line); border-radius: 100px;
+  background: var(--paper2); font-size: 10px; letter-spacing: .08em;
+  color: var(--ink2); cursor: pointer; transition: border-color .15s, color .15s;
+  z-index: 20; font-family: var(--ui-font);
+}
+#font-chip:hover { border-color: var(--ink3); color: var(--ink); }
+
+/* Todo elements */
+.todo-wrap {
+  display: inline-flex; align-items: center; justify-content: center;
+  vertical-align: middle; margin: 0 6px 0 2px;
+  line-height: 1;
+  user-select: none; position: relative;
+  width: 20px; min-width: 20px; max-width: 20px;
+  height: 20px; min-height: 20px; max-height: 20px;
+  flex: 0 0 20px;
+  white-space: nowrap;
+  overflow: hidden;
+  -webkit-tap-highlight-color: transparent;
+}
+.todo-check-custom {
+  width: 18px; height: 18px; border: 2px solid var(--ink3);
+  border-radius: 6px; cursor: pointer; transition: all .15s;
+  background: transparent; position: relative; flex-shrink: 0;
+}
+.todo-wrap[data-checked="true"] .todo-check-custom {
+  background: var(--ink); border-color: var(--ink);
+}
+.todo-wrap[data-checked="true"] .todo-check-custom::after {
+  content: ''; position: absolute; left: 4px; top: 1px;
+  width: 5px; height: 9px; border: solid white;
+  border-width: 0 2px 2px 0; transform: rotate(45deg);
+}
+/* Todo設定ギア：デスクトップは左に浮かせる */
+.todo-settings-trigger {
+  display: none !important;
+}
+/* スマホ：設定ギアは非表示（長押しで設定を開く） */
+@media (max-width: 640px) {
+  /* チェックボックス領域を少し大きくしてタップしやすく */
+  .todo-check-custom {
+    width: 22px; height: 22px; border-radius: 7px;
+  }
+  .todo-wrap[data-checked="true"] .todo-check-custom::after {
+    left: 5px; top: 2px; width: 6px; height: 10px;
+  }
+  /* 右側に歯車ボタンが出るスペース確保 */
+  .todo-wrap {
+    width: 22px; min-width: 22px; max-width: 22px;
+    height: 22px; min-height: 22px; max-height: 22px;
+    flex: 0 0 22px;
+    margin: 0 8px 0 2px;
+    vertical-align: middle;
+  }
+}
+
+/* ── Editor ── */
+#editor-scroll { flex: 1; overflow-y: auto; padding: 68px 0 80px; }
+#editor-scroll::-webkit-scrollbar { width: 0; }
+#editor-inner { max-width: 660px; margin: 0 auto; padding: 0 52px; position: relative; }
+
+#hover-menu-container {
+  position: absolute;
+  background: var(--paper); border: 1px solid var(--line);
+  border-radius: 20px; box-shadow: 0 4px 16px var(--shadow);
+  opacity: 0; pointer-events: none;
+  transition: opacity 0.15s, top 0.1s, left 0.1s, max-width 0.25s cubic-bezier(.4,0,.2,1);
+  z-index: 100; overflow: hidden;
+  height: 38px; max-width: 38px;
+  transform: translateY(-50%);
+  display: flex; align-items: center;
+  -webkit-tap-highlight-color: transparent;
+}
+@media (max-width: 640px) {
+  #hover-menu-container {
+    height: 34px; max-width: 34px; border-radius: 17px;
+    /* スマホ：transform を none にするのはJS側で制御 */
+  }
+  #hover-menu-container.expanded {
+    left: 10px !important; right: 10px !important; 
+    max-width: none !important; width: auto !important;
+    height: auto !important; min-height: 46px; padding: 8px 4px 6px;
+    border-radius: 18px; overflow: visible;
+  }
+}
+
+#hover-menu-container.show { opacity: 1; pointer-events: all; }
+#hover-menu-container.expanded { max-width: 380px; overflow: visible; }
+
+/* Hide menu when mobile panel or modals are open */
+body:has(#mobile-page-panel.open) #hover-menu-container,
+body:has(#modal-overlay.open) #hover-menu-container {
+  display: none !important;
+}
+
+.hm-inner { display: flex; align-items: center; width: max-content; height: 100%; position: relative; }
+@media (max-width: 640px) {
+  .hm-inner { width: 100%; }
+  #hover-menu-container.expanded .hm-inner { width: 100%; flex-wrap: wrap; justify-content: center; align-content: flex-start; padding-top: 0; }
+}
+
+.hm-trigger-icon {
+  width: 38px; height: 38px;
+  display: flex; align-items: center; justify-content: center;
+  color: var(--ink3); flex-shrink: 0; cursor: pointer;
+  transition: opacity 0.2s, transform 0.22s cubic-bezier(.4,0,.2,1);
+}
+@media (max-width: 640px) { 
+  .hm-trigger-icon { width: 34px; height: 34px; } 
+  #hover-menu-container.expanded .hm-trigger-icon { 
+    position: absolute; top: 6px; right: 4px; 
+    width: 22px; height: 22px; z-index: 10;
+  }
+}
+#hover-menu-container.expanded .hm-trigger-icon { transform: rotate(180deg); color: var(--ink4); }
+
+.hm-items {
+  display: flex; align-items: center; gap: 2px;
+  padding: 0 8px 0 2px;
+  opacity: 0; width: 0; overflow: hidden; pointer-events: none;
+  transition: opacity 0.18s 0.05s, width 0.25s cubic-bezier(.4,0,.2,1);
+}
+@media (max-width: 640px) {
+  #hover-menu-container.expanded .hm-items {
+    flex-wrap: wrap; justify-content: center;
+    padding: 4px 28px 4px 4px; gap: 4px;
+    width: 100%; overflow: visible;
+  }
+}
+#hover-menu-container.expanded .hm-items { opacity: 1; width: auto; pointer-events: all; overflow: visible; }
+
+.hm-close-icon { display: none; }
+
+#title-input {
+  width: 100%; font-size: clamp(26px,4vw,46px);
+  font-weight: 700; line-height: 1.15; letter-spacing: -0.04em;
+  border: none; outline: none; background: transparent;
+  color: var(--ink); display: block; resize: none; overflow: hidden;
+  font-family: var(--ed-font);
+}
+#title-input::placeholder { color: var(--ink4); }
+
+.editor-divider { width: 20px; height: 1px; background: var(--ink4); margin: 22px 0; border: none; display: block; }
+
+#content-area {
+  width: 100%; min-height: 55vh;
+  font-size: 17px; font-weight: 400; line-height: 2.05; letter-spacing: .02em;
+  color: var(--ink); font-family: var(--ed-font);
+  outline: none; caret-color: var(--ink);
+}
+#content-area:empty::before { content: 'ここから思考が始まります…'; color: var(--ink4); pointer-events: none; }
+#content-area b, #content-area strong { font-weight: 700; }
+#content-area i, #content-area em     { font-style: italic; }
+#content-area u { text-decoration: underline; text-underline-offset: 3px; }
+#content-area s, #content-area strike { text-decoration: line-through; opacity: .65; }
+#content-area h1 { font-size: 1.6em; font-weight: 700; letter-spacing: -0.03em; line-height: 1.2; margin: .3em 0 .1em; }
+#content-area h2 { font-size: 1.22em; font-weight: 600; letter-spacing: -0.02em; line-height: 1.3; margin: .3em 0 .1em; }
+#content-area blockquote { border-left: 2px solid var(--ink4); padding-left: 14px; color: var(--ink2); font-style: italic; margin: .4em 0; }
+#content-area ul { padding-left: 1.3em; }
+#content-area li { margin: .1em 0; }
+
+/* ══════════════════════════════════════
+   MOBILE LAYOUT  (≤ 640px)
+   ══════════════════════════════════════ */
+@media (max-width: 640px) {
+  body { flex-direction: column; }
+
+  /* Hide desktop sidebar */
+  #nav { display: none; }
+
+  /* Main fills screen, leaves room for bottom bar */
+  #main { height: 100dvh; }
+
+  /* Topbar: compact on mobile */
+  #topbar { padding: 0 14px; height: 40px; }
+  #save-indicator, .sb-sep, #last-modified, #char-count { display: none; }
+
+  /* Fmt bar visible but compact */
+  #fmt-bar { gap: 0; }
+  .fmt-btn { min-width: 22px; height: 26px; padding: 0 4px; font-size: 10px; }
+
+  /* Editor */
+  #editor-scroll { padding: 52px 0 calc(64px + var(--safe-b)); }
+  #editor-inner  { padding: 0 20px; }
+  #title-input   { font-size: clamp(22px, 6vw, 32px); }
+  #content-area  { font-size: 16px; min-height: 50vh; }
+
+  /* Font chip */
+  #font-chip { bottom: calc(64px + var(--safe-b) + 10px); right: 16px; }
+
+  /* ── Bottom nav bar ── */
+  #mobile-bar {
+    position: fixed; bottom: 0; left: 0; right: 0;
+    height: calc(56px + var(--safe-b));
+    padding-bottom: var(--safe-b);
+    background: var(--paper2); border-top: 1px solid var(--line);
+    display: flex; align-items: center; justify-content: space-around;
+    z-index: 100;
+    transition: background .35s var(--ease), border-color .35s var(--ease);
+  }
+
+  .mb-btn {
+    flex: 1; height: 100%; display: flex; flex-direction: column;
+    align-items: center; justify-content: center; gap: 3px;
+    border: none; background: none; cursor: pointer; color: var(--ink3);
+    transition: color .15s; -webkit-tap-highlight-color: transparent;
+    padding-top: 4px;
+  }
+  .mb-btn.active { color: var(--ink); }
+  .mb-btn svg { flex-shrink: 0; }
+  .mb-btn span { font-size: 9px; letter-spacing: .04em; font-family: var(--ui-font); line-height: 1; }
+
+  /* Mobile page list panel */
+  #mobile-page-panel {
+    position: fixed; inset: 0; bottom: calc(56px + var(--safe-b));
+    background: var(--paper2); z-index: 90;
+    display: flex; flex-direction: column;
+    transform: translateX(-100%); transition: transform .28s var(--ease);
+  }
+  #mobile-page-panel.open { transform: none; }
+
+  .mpp-header {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 20px 20px 12px; border-bottom: 1px solid var(--line);
+  }
+  .mpp-title { font-size: 13px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--ink2); font-family: var(--ui-font); }
+  .mpp-add {
+    display: flex; align-items: center; gap: 6px;
+    padding: 7px 14px; border-radius: 24px;
+    background: var(--ink); color: var(--acc-fg);
+    border: none; cursor: pointer; font-family: var(--ui-font);
+    font-size: 12px; font-weight: 600;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  #mobile-page-list {
+    flex: 1; overflow-y: auto; padding: 8px 12px;
+  }
+  #mobile-page-list::-webkit-scrollbar { width: 0; }
+
+  .mpl-item {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 13px 12px; border-radius: 24px; cursor: pointer;
+    transition: background .15s; margin-bottom: 2px;
+    -webkit-tap-highlight-color: transparent;
+    position: relative;
+  }
+  .mpl-item:hover, .mpl-item:active { background: var(--hover); }
+  .mpl-item.active { background: var(--active); }
+  
+  /* Straight insertion line indicator */
+  .mpl-item.drop-target-above::before,
+  .mpl-item.drop-target-below::after {
+    content: ''; position: absolute; left: 12px; right: 12px;
+    height: 2px; background: var(--ink); z-index: 10;
+    border-radius: 1px;
+  }
+  .mpl-item.drop-target-above::before { top: -2px; }
+  .mpl-item.drop-target-below::after { bottom: -2px; }
+  .mpl-item-title { font-size: 15px; color: var(--ink); font-family: var(--ui-font); flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .mpl-item.active .mpl-item-title { font-weight: 600; }
+  .mpl-trash { background: none; border: none; color: var(--ink3); cursor: pointer; padding: 6px; display: flex; align-items: center; flex-shrink: 0; -webkit-tap-highlight-color: transparent; }
+  .mpl-trash:active { color: #B44; }
+}
+
+/* Hide mobile bar on desktop */
+@media (min-width: 641px) {
+  #mobile-bar { display: none !important; }
+  #mobile-page-panel { display: none !important; }
+}
+
+/* ── Delete confirm modal ── */
+#delete-overlay {
+  display: none; position: fixed; inset: 0; z-index: 400;
+  align-items: center; justify-content: center; padding: 24px;
+}
+#delete-overlay.show { display: flex; }
+#delete-scrim {
+  position: absolute; inset: 0;
+  background: rgba(30,28,22,.22);
+  backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px);
+  animation: scrimIn .2s var(--ease);
+}
+#delete-box {
+  position: relative; z-index: 1;
+  background: var(--paper); border: 1px solid var(--line);
+  border-radius: 24px; padding: 28px 28px 24px;
+  width: 100%; max-width: 320px;
+  box-shadow: 0 8px 40px var(--shadow);
+  animation: popIn .22s cubic-bezier(.34,1.4,.64,1);
+}
+@keyframes popIn { from{opacity:0;transform:scale(.94)}to{opacity:1;transform:none} }
+#del-icon {
+  width: 40px; height: 40px; border-radius: 24px;
+  background: #FEE8E8; display: flex; align-items: center; justify-content: center;
+  margin-bottom: 14px; color: #C0392B;
+}
+body.dark #del-icon { background: rgba(192,57,43,.18); }
+#del-heading { font-size: 15px; font-weight: 700; color: var(--ink); margin-bottom: 6px; font-family: var(--ui-font); }
+#del-body { font-size: 13px; color: var(--ink2); margin-bottom: 22px; font-family: var(--ui-font); line-height: 1.6; }
+#del-body strong { color: var(--ink); font-weight: 600; }
+.del-actions { display: flex; gap: 8px; }
+.del-cancel-btn {
+  flex: 1; padding: 11px; border: 1px solid var(--line);
+  border-radius: 24px; background: none; cursor: pointer;
+  font-family: var(--ui-font); font-size: 13px; font-weight: 500;
+  color: var(--ink2); transition: background .15s, color .15s;
+  -webkit-tap-highlight-color: transparent;
+}
+.del-cancel-btn:hover { background: var(--hover); color: var(--ink); }
+.del-delete-btn {
+  flex: 1; padding: 11px; border: none; border-radius: 24px;
+  background: #C0392B; cursor: pointer;
+  font-family: var(--ui-font); font-size: 13px; font-weight: 600;
+  color: #fff; transition: opacity .15s;
+  -webkit-tap-highlight-color: transparent;
+}
+.del-delete-btn:hover { opacity: .85; }
+
+/* ── Modal ── */
+#modal-overlay { display:none; position:fixed; inset:0; z-index:500; align-items:flex-end; justify-content:center; }
+#modal-overlay.open { display:flex; }
+#modal-scrim { position:absolute; inset:0; background:rgba(30,28,22,.18); backdrop-filter:blur(6px); -webkit-backdrop-filter:blur(6px); animation:scrimIn .2s var(--ease); }
+@keyframes scrimIn { from{opacity:0}to{opacity:1} }
+#modal-box { position:relative; width:100%; max-width:520px; background:var(--paper); border:1px solid var(--line); border-bottom:none; border-radius:20px 20px 0 0; padding:24px 28px calc(32px + var(--safe-b)); animation:drawerUp .26s cubic-bezier(.34,1.3,.64,1); z-index:1; max-height:88dvh; overflow-y:auto; }
+#modal-box::-webkit-scrollbar { width: 0; }
+@keyframes drawerUp { from{transform:translateY(110%)}to{transform:none} }
+.modal-handle { width:30px; height:3px; background:var(--line); border-radius:24px; margin:0 auto 20px; }
+.modal-section-title { font-size:10px; font-weight:600; letter-spacing:.2em; text-transform:uppercase; color:var(--ink3); margin-bottom:12px; font-family:var(--ui-font); }
+.modal-input { width:100%; border:none; border-bottom:1.5px solid var(--ink4); background:transparent; color:var(--ink); font-family:var(--ed-font); font-size:20px; font-weight:400; padding:6px 0 12px; outline:none; transition:border-color .2s; margin-bottom:18px; letter-spacing:-.02em; }
+.modal-input:focus { border-bottom-color:var(--ink); }
+.modal-input::placeholder { color:var(--ink4); }
+.modal-apply-btn { width:100%; padding:13px; background:var(--ink); color:var(--acc-fg); border:none; border-radius:24px; font-family:var(--ui-font); font-size:13px; font-weight:600; letter-spacing:.08em; cursor:pointer; transition:opacity .15s; }
+.modal-apply-btn:hover { opacity:.75; }
+
+.settings-row { display:flex; align-items:center; justify-content:space-between; padding:14px 0; border-bottom:1px solid var(--line); cursor:pointer; -webkit-tap-highlight-color:transparent; }
+.settings-row:last-of-type { border-bottom:none; }
+.settings-row:hover .s-label, .settings-row:active .s-label { opacity:.65; }
+.s-label { font-size:14px; font-weight:400; color:var(--ink); transition:opacity .15s; font-family:var(--ui-font); }
+.s-value { font-size:11px; letter-spacing:.08em; color:var(--ink2); font-family:var(--ui-font); max-width:160px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+.kbd { display:inline-block; padding:1px 5px; border:1px solid var(--ink4); border-radius:24px; font-size:9px; color:var(--ink3); margin-left:6px; font-family:monospace; vertical-align:middle; }
+
+/* ── Theme picker ── */
+.theme-swatches { display:flex; gap:8px; margin-bottom:20px; flex-wrap:wrap; }
+.theme-swatch-btn {
+  display:flex; flex-direction:column; align-items:center; gap:5px;
+  background:none; border:none; cursor:pointer; padding:0;
+  -webkit-tap-highlight-color:transparent;
+}
+.theme-swatch-circle {
+  width:32px; height:32px; border-radius:50%;
+  border:2px solid transparent;
+  transition:transform .15s, border-color .15s;
+  box-shadow: 0 0 0 1px var(--line);
+}
+.theme-swatch-btn:hover .theme-swatch-circle { transform:scale(1.1); }
+.theme-swatch-btn.active .theme-swatch-circle { border-color:var(--ink); }
+.theme-swatch-label { font-size:9px; letter-spacing:.06em; color:var(--ink3); font-family:var(--ui-font); }
+
+/* Dark/Light toggle pill */
+.dark-toggle {
+  display:flex; background:var(--paper2); border:1px solid var(--line);
+  border-radius:100px; padding:3px; gap:2px; margin-bottom:20px;
+}
+.dark-toggle-btn {
+  flex:1; padding:7px 0; border:none; border-radius:100px;
+  font-family:var(--ui-font); font-size:12px; font-weight:500;
+  cursor:pointer; transition:background .2s, color .2s;
+  background:transparent; color:var(--ink3);
+  -webkit-tap-highlight-color:transparent;
+}
+.dark-toggle-btn.active { background:var(--ink); color:var(--acc-fg); }
+
+/* Recent fonts */
+.recent-fonts { display:flex; gap:6px; margin-bottom:16px; flex-wrap:wrap; }
+.recent-font-chip {
+  display: flex; align-items:center; gap: 6px;
+  padding:5px 8px 5px 12px; border:1px solid var(--line); border-radius:100px;
+  background:none; font-size:11px; color:var(--ink2);
+  cursor:pointer; font-family:var(--ui-font); letter-spacing:.04em;
+  transition:border-color .15s, color .15s, background .15s;
+  -webkit-tap-highlight-color:transparent;
+}
+.recent-font-chip:hover, .recent-font-chip:active { border-color:var(--ink3); color:var(--ink); background: var(--hover); }
+.recent-font-del {
+  display: flex; align-items: center; justify-content: center;
+  width: 18px; height: 18px; border-radius: 50%;
+  color: var(--ink3); transition: color .15s, background .15s;
+}
+.recent-font-del:hover { background: rgba(192,57,43,0.12); color: #C0392B; }
+</style>
+</head>
+<body data-theme="parchment">
+
+<!-- Desktop sidebar nav -->
+<nav id="nav">
+  <div class="nav-logo">文綴</div>
+  <div id="nav-pages"></div>
+  <button id="nav-add" class="tip-r" onclick="createPage()">
+    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round">
+      <line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/>
+    </svg>
+  </button>
+  <div id="nav-bottom">
+    <button class="nav-icon-btn tip-r" onclick="openSettingsModal(event)" data-tip="環境設定">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="12" cy="12" r="3"/>
+        <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/>
+      </svg>
+    </button>
+  </div>
+</nav>
+
+<!-- Main editor -->
+<main id="main">
+  <div id="topbar">
+    <div id="status-left">
+      <span id="save-indicator">保存済み</span>
+      <div class="sb-sep"></div>
+      <span class="sb-item" id="char-count">0 字</span>
+      <div class="sb-sep"></div>
+      <span class="sb-item" id="last-modified">—</span>
+    </div>
+    <div id="fmt-bar"></div>
+  </div>
+
+  <div id="editor-scroll">
+    <div id="editor-inner">
+      <div id="hover-menu-container"
+        onmouseleave="if(window.innerWidth>640)this.classList.remove('expanded')"
+        onmousedown="event.preventDefault()">
+        <div class="hm-inner">
+          <div class="hm-trigger-icon" onclick="const m=document.getElementById('hover-menu-container');m.classList.contains('expanded')?m.classList.remove('expanded'):m.classList.add('expanded')">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="9 18 15 12 9 6"/>
+            </svg>
+          </div>
+          <div class="hm-items">
+            <button class="fmt-btn" onclick="applyFmt('bold')" title="太字 ⌘B"><b style="font-weight:800">B</b></button>
+            <button class="fmt-btn" onclick="applyFmt('italic')" title="斜体 ⌘I"><i style="font-family:'Shippori Mincho',serif">I</i></button>
+            <button class="fmt-btn" onclick="applyFmt('underline')" title="下線 ⌘U" style="text-decoration:underline;text-underline-offset:2px">U</button>
+            <button class="fmt-btn" onclick="applyFmt('strikeThrough')" title="打ち消し" style="text-decoration:line-through;opacity:.55">S</button>
+            <div class="fmt-sep2"></div>
+            <button class="fmt-btn" onclick="applyBlock('h1')" title="見出し1" style="font-weight:700;font-size:10px">H1</button>
+            <button class="fmt-btn" onclick="applyBlock('h2')" title="見出し2" style="font-weight:700;font-size:10px">H2</button>
+            <div class="fmt-sep2"></div>
+            <button class="fmt-btn" onclick="applyBlock('blockquote')" title="引用" style="font-style:italic;opacity:.55">"</button>
+            <button class="fmt-btn" onclick="applyList()" title="リスト">·−</button>
+            <button class="fmt-btn" onclick="insertTodo()" title="Todo追加">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="3" y="3" width="18" height="18" rx="4" ry="4"/>
+                <path d="M9 12l2 2 4-4"/>
+              </svg>
+            </button>
+            <div class="fmt-sep2"></div>
+            <div class="hm-close-icon" onclick="document.getElementById('hover-menu-container').classList.remove('expanded')">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="15 18 9 12 15 6"/>
+              </svg>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <textarea id="title-input" rows="1" placeholder="題名"></textarea>
+      <hr class="editor-divider">
+      <div id="content-area" contenteditable="true" spellcheck="false"></div>
+    </div>
+  </div>
+
+  <button id="font-chip" onclick="openModal('page-font')">
+    <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <polyline points="4 7 4 4 20 4 20 7"/><line x1="9" y1="20" x2="15" y2="20"/><line x1="12" y1="4" x2="12" y2="20"/>
+    </svg>
+    <span id="font-chip-label">Noto Serif JP</span>
+  </button>
+</main>
+
+<!-- Mobile bottom bar -->
+<div id="mobile-bar">
+  <button class="mb-btn" id="mb-pages" onclick="toggleMobilePanel()">
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/>
+    </svg>
+    <span>メモ</span>
+  </button>
+  <button class="mb-btn" id="mb-edit" onclick="closeMobilePanel()" style="color:var(--ink)">
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/>
+      <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>
+    </svg>
+    <span>編集</span>
+  </button>
+  <button class="mb-btn" onclick="openSettingsModal(event)">
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+      <circle cx="12" cy="12" r="3"/>
+      <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/>
+    </svg>
+    <span>設定</span>
+  </button>
+</div>
+
+<!-- Mobile page list panel -->
+<div id="mobile-page-panel">
+  <div class="mpp-header">
+    <span class="mpp-title">メモ一覧</span>
+    <button class="mpp-add" onclick="createPage()">
+      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
+        <line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/>
+      </svg>
+      新しい記録
+    </button>
+  </div>
+  <div id="mobile-page-list"></div>
+</div>
+
+<!-- Delete confirm modal -->
+<div id="delete-overlay" onclick="deleteOverlayClick(event)">
+  <div id="delete-scrim"></div>
+  <div id="delete-box">
+    <div id="del-icon">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>
+      </svg>
+    </div>
+    <div id="del-heading">このメモを削除しますか？</div>
+    <div id="del-body">「<strong id="del-name"></strong>」は完全に削除されます。この操作は取り消せません。</div>
+    <div class="del-actions">
+      <button class="del-cancel-btn" onclick="cancelDelete()">キャンセル</button>
+      <button class="del-delete-btn" onclick="confirmDelete()">削除する</button>
+    </div>
+  </div>
+</div>
+
+<!-- Desktop page popover -->
+<div id="page-popover">
+  <span class="nav-popover-title" id="popover-title"></span>
+  <button class="nav-popover-trash" id="popover-trash">
+    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>
+    </svg>
+  </button>
+</div>
+
+<!-- Modal -->
+<div id="modal-overlay" onclick="overlayClick(event)">
+  <div id="modal-scrim"></div>
+  <div id="modal-box">
+    <div class="modal-handle"></div>
+    <div id="modal-body"></div>
+  </div>
+</div>
+
+<script>
+const SK_PAGES    = 'fontion_pages_v7';
+const SK_SETTINGS = 'fontion_settings_v7';
+
+let popoverTimer = null;
+window.currentHoverId = null;
+
+window.showPopover = function(el, p) {
+  clearTimeout(popoverTimer);
+  const rect = el.getBoundingClientRect();
+  const popover = document.getElementById('page-popover');
+  popover.style.left = (rect.right + 12) + 'px';
+  popover.style.top = (rect.top + rect.height / 2) + 'px';
+  document.getElementById('popover-title').textContent = p.title || '無題';
+  document.getElementById('popover-title').onclick = () => { if (pendingDeleteId !== p.id) { setActive(p.id); hidePopover(); } };
+  document.getElementById('popover-trash').onclick = (e) => { e.stopPropagation(); hidePopover(); showDeleteConfirm(p.id); };
+  popover.classList.add('show');
+  window.currentHoverId = p.id;
+};
+
+window.startHidePopover = function() {
+  popoverTimer = setTimeout(() => hidePopover(), 150);
+};
+
+window.hidePopover = function() {
+  const popover = document.getElementById('page-popover');
+  if(popover) popover.classList.remove('show');
+  window.currentHoverId = null;
+};
+
+document.addEventListener('DOMContentLoaded', () => {
+  const popover = document.getElementById('page-popover');
+  if(popover) {
+    popover.addEventListener('mouseenter', () => clearTimeout(popoverTimer));
+    popover.addEventListener('mouseleave', () => window.startHidePopover());
+  }
+});
+
+// ── Helpers first (avoid TDZ) ──
+function uid() { return Date.now().toString(36) + Math.random().toString(36).slice(2,6); }
+function loadJSON(k) { try { return JSON.parse(localStorage.getItem(k)); } catch { return null; } }
+
+const loadedFonts = new Set();
+function injectFont(name) {
+  if (!name || loadedFonts.has(name)) return;
+  loadedFonts.add(name);
+  const l = document.createElement('link');
+  l.rel = 'stylesheet';
+  l.href = `https://fonts.googleapis.com/css2?family=${name.replace(/\s+/g,'+')}&display=swap`;
+  document.head.appendChild(l);
+}
+
+// ── Theme definitions ──
+const THEMES = [
+  { id:'parchment', name:'羊皮紙', color:'#C8B99A' },
+  { id:'moss',      name:'苔',     color:'#8FAA80' },
+  { id:'rose',      name:'薔薇',   color:'#C49090' },
+  { id:'slate',     name:'夜空',   color:'#8090C0' },
+  { id:'mono',      name:'モノ',   color:'#909090' },
+];
+
+// ── State ──
+let pages    = loadJSON(SK_PAGES)    || [{ id:uid(), title:'', content:'', font:'Noto Serif JP', updatedAt:Date.now() }];
+let settings = loadJSON(SK_SETTINGS) || { theme:'parchment', dark:false, uiFont:'Zen Kaku Gothic New', recentFonts:[] };
+if (!settings.recentFonts) settings.recentFonts = [];
+
+let activeId = pages[0].id;
+let modalType = null;
+let pendingDeleteId = null;
+let mobilePanelOpen = false;
+let saveTimer, flashTimer, deleteTimer;
+let lastEditorRange = null;
+let todoLongPressTimer = null;
+let todoLongPressStartX = 0;
+let todoLongPressStartY = 0;
+let todoLongPressTargetId = null;
+let suppressTodoToggleId = null;
+let modalOpenedAt = 0;
+let isComposing = false;
+let isNormalizingTodo = false;
+let selectionSyncRaf = 0;
+let compositionWatchdogTimer = 0;
+
+function clearCompositionWatchdog() {
+  if (!compositionWatchdogTimer) return;
+  clearTimeout(compositionWatchdogTimer);
+  compositionWatchdogTimer = 0;
+}
+
+function armCompositionWatchdog() {
+  clearCompositionWatchdog();
+  compositionWatchdogTimer = setTimeout(() => {
+    if (!isComposing) return;
+    isComposing = false;
+    queueSelectionSync();
+    requestSelectionSync();
+  }, 900);
+}
+
+function restoreEditorSelectionIfNeeded() {
+  const sel = window.getSelection();
+  const area = document.getElementById('content-area');
+  if (!area) return;
+
+  if (sel.rangeCount && area.contains(sel.anchorNode)) return;
+
+  if (lastEditorRange) {
+    sel.removeAllRanges();
+    sel.addRange(lastEditorRange.cloneRange());
+    return;
+  }
+
+  const range = document.createRange();
+  range.selectNodeContents(area);
+  range.collapse(false);
+  sel.removeAllRanges();
+  sel.addRange(range);
+  lastEditorRange = range.cloneRange();
+}
+
+function queueSelectionSync() {
+  if (selectionSyncRaf) cancelAnimationFrame(selectionSyncRaf);
+  selectionSyncRaf = requestAnimationFrame(() => {
+    selectionSyncRaf = 0;
+    restoreEditorSelectionIfNeeded();
+    document.dispatchEvent(new Event('selectionchange'));
+  });
+}
+
+function requestSelectionSync() {
+  const ticks = [0, 24, 80, 180];
+  ticks.forEach(ms => setTimeout(() => queueSelectionSync(), ms));
+}
+
+// ── Apply theme + dark ──
+function applyTheme() {
+  document.body.setAttribute('data-theme', settings.theme);
+  document.body.classList.toggle('dark', settings.dark);
+}
+
+function toggleDark() {
+  settings.dark = !settings.dark;
+  applyTheme(); save();
+}
+
+function pickTheme(themeId) {
+  if (!THEMES.some(t => t.id === themeId)) return;
+  settings.theme = themeId;
+  applyTheme();
+  save();
+  if (modalType === 'settings') openModal('settings');
+}
+
+function setDark(isDark) {
+  settings.dark = !!isDark;
+  applyTheme();
+  save();
+  if (modalType === 'settings') openModal('settings');
+}
+
+// ── Persistence ──
+function saveNow() {
+  activePage().updatedAt = Date.now();
+  localStorage.setItem(SK_PAGES,    JSON.stringify(pages));
+  localStorage.setItem(SK_SETTINGS, JSON.stringify(settings));
+  flashSaved(); renderLastModified();
+}
+function save() {
+  clearTimeout(saveTimer);
+  saveTimer = setTimeout(saveNow, 700);
+}
+function flashSaved() {
+  const el = document.getElementById('save-indicator');
+  el.classList.add('show');
+  clearTimeout(flashTimer);
+  flashTimer = setTimeout(() => el.classList.remove('show'), 1400);
+}
+
+// ── Active page ──
+function activePage() { return pages.find(p => p.id === activeId) || pages[0]; }
+
+// ── Nav render (desktop) ──
+function renderNav() {
+  const c = document.getElementById('nav-pages');
+  c.innerHTML = '';
+  
+  let dragToIdx = null;
+
+  pages.forEach((p, idx) => {
+    const wrap = document.createElement('div');
+    wrap.className = 'nav-page-wrap';
+    wrap.draggable = true;
+    wrap.dataset.index = idx;
+
+    wrap.addEventListener('dragstart', e => {
+      wrap.classList.add('dragging');
+      e.dataTransfer.setData('text/plain', idx);
+      e.dataTransfer.effectAllowed = 'move';
+      // Hide ghost image on PC
+      const img = new Image();
+      img.src = 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7';
+      e.dataTransfer.setDragImage(img, 0, 0);
+    });
+    wrap.addEventListener('dragend', () => {
+      wrap.classList.remove('dragging');
+      c.querySelectorAll('.nav-page-wrap').forEach(el => el.classList.remove('drop-target-above', 'drop-target-below'));
+    });
+    wrap.addEventListener('dragover', e => {
+      e.preventDefault();
+      const rect = wrap.getBoundingClientRect();
+      const relY = e.clientY - rect.top;
+      
+      c.querySelectorAll('.nav-page-wrap').forEach(el => el.classList.remove('drop-target-above', 'drop-target-below'));
+      
+      if (relY < rect.height * 0.5) {
+        wrap.classList.add('drop-target-above');
+        dragToIdx = idx;
+      } else {
+        wrap.classList.add('drop-target-below');
+        dragToIdx = idx + 1;
+      }
+    });
+    wrap.addEventListener('dragleave', () => {
+      wrap.classList.remove('drop-target-above', 'drop-target-below');
+    });
+    wrap.addEventListener('drop', e => {
+      e.preventDefault();
+      const fromIdx = parseInt(e.dataTransfer.getData('text/plain'));
+      if (dragToIdx !== null) {
+        if (fromIdx !== dragToIdx && fromIdx !== dragToIdx - 1) {
+          const finalTo = dragToIdx > fromIdx ? dragToIdx - 1 : dragToIdx;
+          reorderPages(fromIdx, finalTo);
+        }
+      }
+      dragToIdx = null;
+    });
+
+    const btn = document.createElement('button');
+    btn.className = 'nav-dot' + (p.id === activeId ? ' active' : '');
+    btn.innerHTML = `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/>
+    </svg>`;
+    btn.addEventListener('click', () => { if (pendingDeleteId !== p.id) setActive(p.id); });
+
+    wrap.addEventListener('mouseenter', () => window.showPopover(wrap, p));
+    wrap.addEventListener('mouseleave', () => window.startHidePopover());
+
+    wrap.appendChild(btn); c.appendChild(wrap);
+  });
+}
+
+function reorderPages(from, to) {
+  const item = pages.splice(from, 1)[0];
+  pages.splice(to, 0, item);
+  saveNow();
+  renderNav();
+  renderMobilePageList();
+}
+
+// Mobile page list
+function renderMobilePageList() {
+  const c = document.getElementById('mobile-page-list');
+  c.innerHTML = '';
+  pages.forEach((p, idx) => {
+    const item = document.createElement('div');
+    item.className = 'mpl-item' + (p.id === activeId ? ' active' : '');
+    item.dataset.index = idx;
+    
+    item.innerHTML = `
+      <div class="mpl-drag-handle" style="margin-right:10px; color:var(--ink4); padding: 10px 5px; cursor: grab;">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
+          <line x1="4" y1="9" x2="20" y2="9"/><line x1="4" y1="15" x2="20" y2="15"/>
+        </svg>
+      </div>
+      <span class="mpl-item-title">${p.title || '無題の思索'}</span>
+      <button class="mpl-trash">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>
+        </svg>
+      </button>`;
+    
+    item.addEventListener('click', (e) => {
+      if (e.target.closest('.mpl-trash') || e.target.closest('.mpl-drag-handle')) return;
+      setActive(p.id); closeMobilePanel();
+    });
+
+    // Touch-based reordering for mobile
+    const handle = item.querySelector('.mpl-drag-handle');
+    let startY, currentIdx, targetIdx;
+    
+    handle.addEventListener('touchstart', e => {
+      startY = e.touches[0].clientY;
+      currentIdx = idx;
+      item.classList.add('dragging');
+      // Prevent scrolling while dragging
+      document.body.style.overflow = 'hidden';
+    }, {passive:true});
+
+    handle.addEventListener('touchmove', e => {
+      const touchY = e.touches[0].clientY;
+      const overEl = document.elementFromPoint(e.touches[0].clientX, touchY);
+      const targetItem = overEl ? overEl.closest('.mpl-item') : null;
+
+      // Clear all indicators
+      c.querySelectorAll('.mpl-item').forEach(el => {
+        el.classList.remove('drop-target-above', 'drop-target-below');
+      });
+
+      if (targetItem && targetItem !== item) {
+        targetIdx = parseInt(targetItem.dataset.index);
+        const rect = targetItem.getBoundingClientRect();
+        if (touchY < rect.top + rect.height / 2) {
+          targetItem.classList.add('drop-target-above');
+        } else {
+          targetItem.classList.add('drop-target-below');
+          targetIdx += 1;
+        }
+      } else {
+        targetIdx = null;
+      }
+    }, {passive:false});
+
+    handle.addEventListener('touchend', () => {
+      item.classList.remove('dragging');
+      c.querySelectorAll('.mpl-item').forEach(el => el.classList.remove('drop-target-above', 'drop-target-below'));
+      document.body.style.overflow = '';
+      
+      if (targetIdx !== null && targetIdx !== undefined && targetIdx !== idx && targetIdx !== idx + 1) {
+        const finalTo = targetIdx > idx ? targetIdx - 1 : targetIdx;
+        reorderPages(idx, finalTo);
+      }
+    });
+
+    item.querySelector('.mpl-trash').addEventListener('click', e => { e.stopPropagation(); showDeleteConfirm(p.id); });
+    c.appendChild(item);
+  });
+}
+
+function setActive(id) {
+  activeId = id;
+  renderNav();
+  renderMobilePageList();
+  loadActivePage();
+}
+
+// Mobile panel toggle
+function toggleMobilePanel() {
+  mobilePanelOpen ? closeMobilePanel() : openMobilePanel();
+}
+function openMobilePanel() {
+  mobilePanelOpen = true;
+  renderMobilePageList();
+  document.getElementById('mobile-page-panel').classList.add('open');
+  document.getElementById('mb-pages').style.color = 'var(--ink)';
+  document.getElementById('mb-edit').style.color  = 'var(--ink3)';
+}
+function closeMobilePanel() {
+  mobilePanelOpen = false;
+  document.getElementById('mobile-page-panel').classList.remove('open');
+  document.getElementById('mb-pages').style.color = 'var(--ink3)';
+  document.getElementById('mb-edit').style.color  = 'var(--ink)';
+}
+
+// ── Load page ──
+function loadActivePage() {
+  const p = activePage();
+  injectFont(p.font);
+  const tEl = document.getElementById('title-input');
+  const cEl = document.getElementById('content-area');
+  tEl.style.fontFamily = cEl.style.fontFamily = `'${p.font}', serif`;
+  tEl.value = p.title;
+  cEl.innerHTML = p.content || '';
+  autoResizeTitle();
+  updateCharCount();
+  renderLastModified();
+  document.getElementById('font-chip-label').textContent = p.font;
+}
+
+// ── CRUD ──
+function createPage() {
+  const p = { id:uid(), title:'', content:'', font:'Noto Serif JP', updatedAt:Date.now() };
+  pages.push(p);
+  setActive(p.id);
+  closeMobilePanel();
+  saveNow();
+  setTimeout(() => document.getElementById('title-input').focus(), 50);
+}
+
+function showDeleteConfirm(id) {
+  pendingDeleteId = id;
+  const p = pages.find(x => x.id === id);
+  document.getElementById('del-name').textContent = p?.title || '無題';
+  document.getElementById('delete-overlay').classList.add('show');
+}
+function confirmDelete() {
+  if (!pendingDeleteId) return;
+  const id = pendingDeleteId; cancelDelete();
+  pages = pages.filter(p => p.id !== id);
+  if (!pages.length) pages = [{ id:uid(), title:'', content:'', font:'Noto Serif JP', updatedAt:Date.now() }];
+  if (activeId === id) activeId = pages[0].id;
+  renderNav(); renderMobilePageList(); loadActivePage(); saveNow();
+}
+function cancelDelete() {
+  pendingDeleteId = null;
+  document.getElementById('delete-overlay').classList.remove('show');
+}
+function deleteOverlayClick(e) {
+  if (e.target === document.getElementById('delete-scrim') ||
+      e.target === document.getElementById('delete-overlay')) cancelDelete();
+}
+
+// ── Editor ──
+document.getElementById('title-input').addEventListener('input', function() {
+  activePage().title = this.value;
+  autoResizeTitle();
+  
+  const titleSpan = document.getElementById('popover-title');
+  if (titleSpan && window.currentHoverId === activePage().id) {
+    titleSpan.textContent = this.value || '無題';
+  }
+  
+  // live update mobile list item
+  const mItem = document.querySelector('.mpl-item.active .mpl-item-title');
+  if (mItem) mItem.textContent = this.value || '無題の思索';
+  save();
+});
+document.getElementById('title-input').addEventListener('keydown', e => {
+  if (e.key === 'Enter') { e.preventDefault(); document.getElementById('content-area').focus(); }
+});
+function autoResizeTitle() {
+  const el = document.getElementById('title-input');
+  el.style.height = 'auto'; el.style.height = el.scrollHeight + 'px';
+}
+
+function applyInlineFmt(node, match, offset, cmd) {
+  const text = node.textContent;
+  let matchIndex = match.index;
+  let innerText = match[1];
+  
+  if (cmd === 'italic') {
+    matchIndex += match.prefix.length;
+    innerText = match.innerText;
+  }
+  
+  const before = text.slice(0, matchIndex);
+  const after = text.slice(offset);
+  
+  node.textContent = before + innerText + after;
+  
+  const r = document.createRange();
+  r.setStart(node, before.length);
+  r.setEnd(node, before.length + innerText.length);
+  const sel = window.getSelection();
+  sel.removeAllRanges();
+  sel.addRange(r);
+  
+  document.execCommand(cmd, false, null);
+  
+  sel.collapseToEnd();
+  document.execCommand(cmd, false, null);
+  document.execCommand('insertText', false, '\u200B');
+  
+  activePage().content = document.getElementById('content-area').innerHTML;
+}
+
+document.getElementById('content-area').addEventListener('input', function(e) {
+  const liveSel = window.getSelection();
+  const liveArea = document.getElementById('content-area');
+  if (liveSel.rangeCount && liveArea.contains(liveSel.anchorNode)) {
+    lastEditorRange = liveSel.getRangeAt(0).cloneRange();
+  }
+
+  // Some IME paths do not emit compositionend reliably.
+  if (isComposing && !e.isComposing) {
+    isComposing = false;
+    clearCompositionWatchdog();
+    queueSelectionSync();
+    requestSelectionSync();
+  }
+
+  if (isComposing || e.isComposing) {
+    armCompositionWatchdog();
+    activePage().content = this.innerHTML;
+    updateCharCount();
+    save();
+    return;
+  }
+
+  if (normalizeTodoWraps()) {
+    activePage().content = this.innerHTML;
+  }
+
+  activePage().content = this.innerHTML;
+  updateCharCount(); save();
+  queueSelectionSync();
+
+  const sel = window.getSelection();
+  if (!sel.rangeCount) return;
+  const node = sel.anchorNode;
+  
+  if (node.nodeType === 3) {
+    const text = node.textContent;
+    const offset = sel.anchorOffset;
+    const beforeCursor = text.slice(0, offset);
+    
+    // 1. Block level format
+    let blockCmd = null;
+    if (beforeCursor === '# ') blockCmd = 'h1';
+    else if (beforeCursor === '## ') blockCmd = 'h2';
+    else if (beforeCursor === '> ') blockCmd = 'blockquote';
+    else if (beforeCursor === '- ' || beforeCursor === '* ') blockCmd = 'ul';
+    
+    if (blockCmd) {
+      e.preventDefault();
+      node.textContent = text.slice(offset);
+      const r = document.createRange();
+      r.setStart(node, 0); r.collapse(true);
+      sel.removeAllRanges(); sel.addRange(r);
+      
+      if (blockCmd === 'ul') document.execCommand('insertUnorderedList', false, null);
+      else document.execCommand('formatBlock', false, blockCmd);
+      
+      activePage().content = this.innerHTML;
+      return;
+    }
+    
+    // 2. Format exit marker
+    let parent = node.parentNode;
+    const checkExit = (cmd, tagName, marker) => {
+      if (parent && (parent.tagName === tagName || document.queryCommandState(cmd)) && beforeCursor.endsWith(marker)) {
+        node.textContent = text.slice(0, offset - marker.length) + text.slice(offset);
+        const r = document.createRange();
+        r.setStart(node, offset - marker.length); r.collapse(true);
+        sel.removeAllRanges(); sel.addRange(r);
+        
+        document.execCommand(cmd, false, null);
+        document.execCommand('insertText', false, '\u200B');
+        return true;
+      }
+      return false;
+    };
+    if (checkExit('bold', 'B', '**')) return;
+    if (checkExit('bold', 'STRONG', '**')) return;
+    if (checkExit('italic', 'I', '*')) return;
+    if (checkExit('italic', 'EM', '*')) return;
+    if (checkExit('strikeThrough', 'S', '~~')) return;
+    if (checkExit('strikeThrough', 'STRIKE', '~~')) return;
+    
+    // 3. Inline markup
+    const boldMatch = beforeCursor.match(/\*\*([^\*]+)\*\*$/);
+    if (boldMatch && !document.queryCommandState('bold')) {
+      applyInlineFmt(node, boldMatch, offset, 'bold'); return;
+    }
+    const italicMatch = beforeCursor.match(/(^|[^\*])\*([^\*]+)\*$/);
+    if (italicMatch && !document.queryCommandState('italic')) {
+      const innerText = italicMatch[2];
+      const m = {0: italicMatch[0], index: italicMatch.index, innerText: innerText, prefix: italicMatch[1], 1: italicMatch[1]};
+      applyInlineFmt(node, m, offset, 'italic'); return;
+    }
+    const strikeMatch = beforeCursor.match(/~~([^~]+)~~$/);
+    if (strikeMatch && !document.queryCommandState('strikeThrough')) {
+      applyInlineFmt(node, strikeMatch, offset, 'strikeThrough'); return;
+    }
+  }
+});
+
+document.getElementById('content-area').addEventListener('beforeinput', function(e) {
+  const sel = window.getSelection();
+  if (!sel.rangeCount) return;
+  const wrap = getTodoWrapFromNode(sel.anchorNode);
+  if (!wrap) return;
+
+  moveCaretAfterTodoWrap(wrap);
+
+  // Let the browser handle insertion after caret is relocated.
+  // Preventing default here breaks full-width/composition input on iOS.
+  if (isComposing || e.isComposing || /Composition/i.test(e.inputType || '')) return;
+});
+
+document.getElementById('content-area').addEventListener('keydown', function(e) {
+  if (isComposing || e.isComposing) return;
+  if (e.key === 'Enter') {
+    const sel = window.getSelection();
+    if (sel && sel.rangeCount && sel.isCollapsed && isTodoNearCaret(sel)) {
+      e.preventDefault();
+      document.execCommand('insertLineBreak', false, null);
+      activePage().content = document.getElementById('content-area').innerHTML;
+      save();
+      return;
+    }
+  }
+
+  if (e.key === 'Tab') { e.preventDefault(); document.execCommand('insertText', false, '　'); }
+});
+
+function updateCharCount() {
+  const text = (activePage().title || '') + (document.getElementById('content-area').innerText || '');
+  document.getElementById('char-count').textContent = `${text.replace(/[\s\u200B]/g,'').length} 字`;
+}
+function renderLastModified() {
+  const p = activePage();
+  if (!p.updatedAt) { document.getElementById('last-modified').textContent = '—'; return; }
+  const d = new Date(p.updatedAt);
+  const diff = Math.floor((Date.now() - d) / 60000);
+  let label;
+  if (diff < 1) label = 'たった今';
+  else if (diff < 60) label = `${diff}分前`;
+  else if (diff < 1440) label = `${Math.floor(diff/60)}時間前`;
+  else {
+    const mm = String(d.getMonth()+1).padStart(2,'0');
+    const dd = String(d.getDate()).padStart(2,'0');
+    const hh = String(d.getHours()).padStart(2,'0');
+    const mi = String(d.getMinutes()).padStart(2,'0');
+    label = `${mm}/${dd} ${hh}:${mi}`;
+  }
+  document.getElementById('last-modified').textContent = label;
+}
+setInterval(renderLastModified, 60000);
+
+// ── Formatting ──
+function applyFmt(cmd) {
+  document.getElementById('content-area').focus();
+  document.execCommand(cmd, false, null);
+  activePage().content = document.getElementById('content-area').innerHTML;
+  save();
+}
+function applyBlock(tag) {
+  document.getElementById('content-area').focus();
+  document.execCommand('formatBlock', false, tag);
+  activePage().content = document.getElementById('content-area').innerHTML;
+  save();
+}
+function applyList() {
+  document.getElementById('content-area').focus();
+  document.execCommand('insertUnorderedList', false, null);
+  activePage().content = document.getElementById('content-area').innerHTML;
+  save();
+}
+
+function moveCaretAfterTodoWrap(wrap) {
+  if (!wrap || !wrap.parentNode) return;
+
+  // Backward compatibility: remove legacy NBSP placeholder created by older builds.
+  const next = wrap.nextSibling;
+  if (next && next.nodeType === 3 && next.textContent && next.textContent.charAt(0) === '\u00A0') {
+    next.textContent = next.textContent.slice(1);
+  }
+
+  let anchorNode = wrap.nextSibling;
+  if (!anchorNode || anchorNode.nodeType !== 3) {
+    anchorNode = document.createTextNode('\u200B');
+    wrap.parentNode.insertBefore(anchorNode, wrap.nextSibling);
+  } else if (!anchorNode.textContent) {
+    anchorNode.textContent = '\u200B';
+  }
+
+  const range = document.createRange();
+  range.setStart(anchorNode, anchorNode.textContent.length);
+  range.collapse(true);
+  const sel = window.getSelection();
+  sel.removeAllRanges();
+  sel.addRange(range);
+  lastEditorRange = range.cloneRange();
+}
+
+function isTodoNode(node) {
+  return !!(node && node.nodeType === 1 && node.classList && node.classList.contains('todo-wrap'));
+}
+
+function getTodoWrapFromNode(node) {
+  if (!node) return null;
+  let el = node.nodeType === 3 ? node.parentNode : node;
+  if (!el || !el.closest) return null;
+  return el.closest('.todo-wrap');
+}
+
+function normalizeTodoWraps() {
+  if (isNormalizingTodo) return false;
+
+  isNormalizingTodo = true;
+  let changed = false;
+  document.querySelectorAll('.todo-wrap').forEach(wrap => {
+    let leakedText = '';
+    const removeNodes = [];
+
+    wrap.childNodes.forEach(child => {
+      if (child.nodeType === 3) {
+        if ((child.textContent || '').replace(/[\u200B\s]/g, '').length > 0) {
+          leakedText += child.textContent;
+          removeNodes.push(child);
+        }
+      } else if (child.nodeType === 1) {
+        const isKnown = child.classList.contains('todo-settings-trigger') || child.classList.contains('todo-check-custom');
+        if (!isKnown) {
+          leakedText += child.textContent || '';
+          removeNodes.push(child);
+        }
+      }
+    });
+
+    if (removeNodes.length) {
+      removeNodes.forEach(n => n.remove());
+      changed = true;
+    }
+
+    if (leakedText) {
+      const textNode = document.createTextNode(leakedText);
+      wrap.parentNode.insertBefore(textNode, wrap.nextSibling);
+      changed = true;
+    }
+  });
+
+  isNormalizingTodo = false;
+
+  return changed;
+}
+
+function setupTodoNormalizerObserver() {
+  const area = document.getElementById('content-area');
+  if (!area) return;
+
+  const observer = new MutationObserver(() => {
+    if (isNormalizingTodo) return;
+    if (normalizeTodoWraps()) {
+      activePage().content = area.innerHTML;
+      updateCharCount();
+      save();
+    }
+  });
+
+  observer.observe(area, {
+    childList: true,
+    subtree: true,
+    characterData: true
+  });
+}
+
+function isTodoNearCaret(sel) {
+  const range = sel.getRangeAt(0);
+  const node = range.startContainer;
+  const offset = range.startOffset;
+
+  if (node.nodeType === 3) {
+    if (isTodoNode(node.previousSibling) || isTodoNode(node.nextSibling)) return true;
+    const parent = node.parentNode;
+    if (parent && parent.nodeType === 1) {
+      if (isTodoNode(parent.previousSibling) || isTodoNode(parent.nextSibling)) return true;
+    }
+    return false;
+  }
+
+  if (node.nodeType === 1) {
+    const before = node.childNodes[offset - 1];
+    const after = node.childNodes[offset];
+    if (isTodoNode(before) || isTodoNode(after)) return true;
+  }
+
+  return false;
+}
+
+function hasVisibleContentBeforeInLine(node) {
+  let cur = node;
+  while (cur && cur.id !== 'content-area') {
+    let prev = cur.previousSibling;
+    while (prev) {
+      if (prev.nodeType === 1 && prev.tagName === 'BR') return false;
+
+      const t = (prev.textContent || '').replace(/[\s\u200B]/g, '');
+      if (t.length > 0) return true;
+      prev = prev.previousSibling;
+    }
+
+    const parent = cur.parentNode;
+    if (!parent || parent.id === 'content-area') break;
+    if (parent.nodeType === 1 && /^(DIV|P|LI|BLOCKQUOTE|H1|H2|H3|H4|H5|H6)$/i.test(parent.tagName)) break;
+    cur = parent;
+  }
+  return false;
+}
+
+function hasVisibleText(node) {
+  return !!((node && node.textContent || '').replace(/[\s\u200B]/g, '').length);
+}
+
+function isLineBreakNode(node) {
+  return !!(node && node.nodeType === 1 && node.tagName === 'BR');
+}
+
+function isBlockNode(node) {
+  return !!(node && node.nodeType === 1 && /^(DIV|P|LI|BLOCKQUOTE|H1|H2|H3|H4|H5|H6)$/i.test(node.tagName));
+}
+
+function isCaretAtLineStart(sel) {
+  if (!sel || !sel.rangeCount) return false;
+  const range = sel.getRangeAt(0);
+  const area = document.getElementById('content-area');
+  if (!area.contains(range.startContainer)) return false;
+
+  let node = range.startContainer;
+  const offset = range.startOffset;
+
+  if (node.nodeType === 3) {
+    const before = (node.textContent || '').slice(0, offset).replace(/[\s\u200B]/g, '');
+    if (before.length > 0) return false;
+    let prev = node.previousSibling;
+    while (prev) {
+      if (isLineBreakNode(prev)) return true;
+      if (isBlockNode(prev)) return true;
+      if (hasVisibleText(prev)) return false;
+      prev = prev.previousSibling;
+    }
+    node = node.parentNode;
+  } else if (node.nodeType === 1) {
+    const atNodeStart = offset === 0;
+    if (atNodeStart && isBlockNode(node)) return true;
+
+    const childAtCaret = node.childNodes[offset];
+    if (childAtCaret && isBlockNode(childAtCaret)) return true;
+
+    for (let i = offset - 1; i >= 0; i--) {
+      const child = node.childNodes[i];
+      if (isLineBreakNode(child)) return true;
+      if (isBlockNode(child)) return true;
+      if (hasVisibleText(child)) return false;
+    }
+  }
+
+  let cur = node;
+  while (cur && cur !== area) {
+    if (isBlockNode(cur)) return true;
+
+    let prev = cur.previousSibling;
+    while (prev) {
+      if (isLineBreakNode(prev)) return true;
+      if (isBlockNode(prev)) return true;
+      if (hasVisibleText(prev)) return false;
+      prev = prev.previousSibling;
+    }
+    cur = cur.parentNode;
+  }
+
+  return true;
+}
+
+function insertTodo() {
+  const area = document.getElementById('content-area');
+  area.focus();
+  const sel = window.getSelection();
+  if ((!sel.rangeCount || !area.contains(sel.anchorNode)) && lastEditorRange) {
+    sel.removeAllRanges();
+    sel.addRange(lastEditorRange.cloneRange());
+  }
+
+  if (!sel.rangeCount || !area.contains(sel.anchorNode)) return;
+  if (!isCaretAtLineStart(sel)) return;
+
+  const id = 'todo_' + Math.random().toString(36).substr(2, 9);
+  const rawHtml = `<span class="todo-wrap" data-id="${id}" data-checked="false" data-reset="none" contenteditable="false"><span class="todo-settings-trigger" onclick="window.openTodoSettings('${id}')"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg></span><span class="todo-check-custom" onclick="toggleTodo(this)"></span></span>`;
+  document.execCommand('insertHTML', false, rawHtml);
+
+  const inserted = document.querySelector(`.todo-wrap[data-id="${id}"]`);
+  moveCaretAfterTodoWrap(inserted);
+
+  activePage().content = document.getElementById('content-area').innerHTML;
+  save();
+}
+
+// ── Format state detection ──
+// Map: button data-cmd → execCommand query string (or custom check)
+const FMT_CHECKS = [
+  { cmd: 'bold',          query: 'bold' },
+  { cmd: 'italic',        query: 'italic' },
+  { cmd: 'underline',     query: 'underline' },
+  { cmd: 'strikeThrough', query: 'strikeThrough' },
+];
+const BLOCK_CHECKS = ['h1', 'h2', 'blockquote'];
+
+function updateFmtBar() {
+  const area = document.getElementById('content-area');
+  const sel = window.getSelection();
+  // Only update when selection is inside content-area
+  if (!area.contains(sel.anchorNode)) {
+    // Clear all active states
+    document.querySelectorAll('.fmt-btn').forEach(b => b.classList.remove('is-active'));
+    return;
+  }
+
+  // Inline format checks
+  FMT_CHECKS.forEach(({ cmd, query }) => {
+    document.querySelectorAll(`.fmt-btn[onclick*="${cmd}"]`).forEach(btn => {
+      try {
+        const active = document.queryCommandState(query);
+        btn.classList.toggle('is-active', active);
+      } catch(e) {}
+    });
+  });
+
+  // Block format checks (H1, H2, blockquote)
+  let blockTag = '';
+  try { blockTag = document.queryCommandValue('formatBlock').toLowerCase(); } catch(e) {}
+  BLOCK_CHECKS.forEach(tag => {
+    document.querySelectorAll(`.fmt-btn[onclick*="'${tag}'"]`).forEach(btn => {
+      btn.classList.toggle('is-active', blockTag === tag);
+    });
+  });
+
+  // List check
+  document.querySelectorAll('.fmt-btn[onclick*="applyList"]').forEach(listBtn => {
+    try {
+      listBtn.classList.toggle('is-active', document.queryCommandState('insertUnorderedList'));
+    } catch(e) {}
+  });
+}
+
+// Listen to selection changes to update fmt bar and hover menu
+document.addEventListener('selectionchange', () => {
+  updateFmtBar();
+  
+  const sel = window.getSelection();
+  const area = document.getElementById('content-area');
+  const menu = document.getElementById('hover-menu-container');
+  const panel = document.getElementById('mobile-page-panel');
+
+  if (sel.rangeCount && area.contains(sel.anchorNode)) {
+    lastEditorRange = sel.getRangeAt(0).cloneRange();
+  }
+
+  if (sel.rangeCount) {
+    let node = sel.anchorNode;
+    if (node && node.nodeType === 3) node = node.parentNode;
+    if (node && node.closest) {
+      const todoWrap = node.closest('.todo-wrap');
+      if (todoWrap && area.contains(todoWrap)) {
+        moveCaretAfterTodoWrap(todoWrap);
+        return;
+      }
+    }
+  }
+
+  if (!sel.rangeCount || !area.contains(sel.anchorNode) || (panel && panel.classList.contains('open'))) {
+    // We only hide 'show' if 'expanded' is also not present, 
+    // AND if we are sure the focus actually left the editor.
+    if (menu && !menu.classList.contains('expanded')) {
+      menu.classList.remove('show');
+    }
+    return;
+  }
+  
+  if (menu && menu.classList.contains('expanded')) return;
+
+  const range = sel.getRangeAt(0);
+  let rect = range.getBoundingClientRect();
+  const innerRect = document.getElementById('editor-inner').getBoundingClientRect();
+  const areaRect = area.getBoundingClientRect();
+
+  // If editor is empty or at the start of a line, getBoundingClientRect often fails (0,0,0,0)
+  if (rect.top === 0 || (rect.width === 0 && rect.height === 0)) {
+    let el = sel.anchorNode;
+    if (el && el.nodeType === 3) el = el.parentNode;
+    if (el && el !== document.body && area.contains(el)) {
+        rect = el.getBoundingClientRect();
+    }
+  }
+
+  // Final fallback (completely empty editor or outside focus)
+  if (rect.top === 0 || !area.contains(sel.anchorNode)) {
+    rect = {
+      top: areaRect.top,
+      bottom: areaRect.top + 24,
+      left: areaRect.left,
+      right: areaRect.left,
+      height: 24,
+      width: 0
+    };
+  }
+
+  if (menu) {
+    const vpW = window.innerWidth;
+    const isMobile = vpW <= 640;
+    
+    // Improved rect for mobile/collapsed
+    if (sel.isCollapsed && rect.height === 0) {
+      const range = sel.getRangeAt(0).cloneRange();
+      const span = document.createElement('span');
+      span.textContent = '\u200b'; // zero-width space
+      range.insertNode(span);
+      rect = span.getBoundingClientRect();
+      const p = span.parentNode;
+      p.removeChild(span);
+      p.normalize();
+    }
+
+    let topOffset, leftOffset;
+    const editorInner = document.getElementById('editor-inner');
+    const editorRect = editorInner.getBoundingClientRect();
+    const scrollTop = document.getElementById('editor-scroll').scrollTop;
+
+    if (isMobile) {
+      topOffset = rect.bottom - editorRect.top + scrollTop + 8;
+      menu.style.transform = 'none';
+    } else {
+      const verticalOffset = (rect.height > 32) ? 12 : (rect.height / 2);
+      topOffset = rect.top - editorRect.top + scrollTop + verticalOffset;
+      menu.style.transform = 'translateY(-50%)';
+    }
+
+    let leftAnchor = (!sel.isCollapsed && rect.width > 0) ? rect.right : (rect.left || areaRect.left);
+    leftOffset = leftAnchor - editorRect.left + 8;
+    
+    if (isMobile) {
+        if (leftOffset > vpW - 52) leftOffset = vpW - 52;
+        if (leftOffset < 12) leftOffset = 12;
+    } else {
+        if (leftOffset > editorRect.width - 44) leftOffset = editorRect.width - 44;
+        if (leftOffset < 16) leftOffset = 16;
+    }
+    
+    const isExpanded = menu.classList.contains('expanded');
+    const currentTop = parseInt(menu.style.top) || 0;
+    
+    // Auto-collapse if moved to a different line while expanded
+    if (isExpanded && Math.abs(currentTop - topOffset) > 24) {
+      menu.classList.remove('expanded');
+    }
+    
+    menu.style.top = topOffset + 'px';
+    menu.style.left = leftOffset + 'px';
+    menu.classList.add('show');
+  }
+});
+
+document.getElementById('content-area').addEventListener('keyup', e => {
+  if (isComposing || e.isComposing) return;
+  updateFmtBar();
+  // Auto markdown conversions (space pressed)
+  if (e.key === ' ' || e.code === 'Space') {
+    const sel = window.getSelection();
+    if (!sel.rangeCount) return;
+    const node = sel.anchorNode;
+    if (node.nodeType === 3) {
+      const text = node.textContent;
+      const beforeCursor = text.slice(0, sel.anchorOffset);
+      if (/^[-*]\s$/.test(text) && sel.anchorOffset === 2) {
+        document.execCommand('delete', false);
+        document.execCommand('delete', false);
+        applyList();
+      } else if (/^(\[\]|\[ \])\s$/.test(beforeCursor)
+          && !hasVisibleContentBeforeInLine(node)
+          && sel.anchorOffset === beforeCursor.length) {
+        for (let i = 0; i < beforeCursor.length; i++) document.execCommand('delete', false);
+        insertTodo();
+      }
+    }
+  }
+  
+  if (e.key === 'Enter') {
+    // Re-assign IDs to duplicate todo items that get cloned by hitting enter
+    const seen = new Set();
+    let changed = false;
+    document.querySelectorAll('.todo-wrap').forEach(wrap => {
+      const id = wrap.dataset.id;
+      if (seen.has(id)) {
+        wrap.dataset.id = 'todo_' + Math.random().toString(36).substr(2, 9);
+        wrap.dataset.checked = 'false';
+        delete wrap.dataset.checkedAt;
+        wrap.dataset.reset = 'none';
+        changed = true;
+      } else {
+        seen.add(id);
+      }
+    });
+    if (changed) save();
+  }
+});
+document.getElementById('content-area').addEventListener('mouseup', updateFmtBar);
+
+document.getElementById('content-area').addEventListener('compositionstart', () => {
+  isComposing = true;
+  armCompositionWatchdog();
+  queueSelectionSync();
+});
+
+document.getElementById('content-area').addEventListener('compositionupdate', () => {
+  armCompositionWatchdog();
+  queueSelectionSync();
+});
+
+document.getElementById('content-area').addEventListener('compositionend', () => {
+  isComposing = false;
+  clearCompositionWatchdog();
+  const sel = window.getSelection();
+  const area = document.getElementById('content-area');
+  if ((!sel.rangeCount || !area.contains(sel.anchorNode)) && lastEditorRange) {
+    sel.removeAllRanges();
+    sel.addRange(lastEditorRange.cloneRange());
+  }
+  if (sel.rangeCount && area.contains(sel.anchorNode)) {
+    lastEditorRange = sel.getRangeAt(0).cloneRange();
+  }
+
+  // iOS IME may delay selection restoration; retry sync for a short window.
+  updateFmtBar();
+  queueSelectionSync();
+  requestSelectionSync();
+});
+
+function clearTodoLongPress() {
+  clearTimeout(todoLongPressTimer);
+  todoLongPressTimer = null;
+  todoLongPressTargetId = null;
+}
+
+const LONG_PRESS_MS = 500;
+const LONG_PRESS_MOVE_TOLERANCE = 8;
+
+document.getElementById('content-area').addEventListener('pointerdown', function(e) {
+  const wrap = e.target.closest('.todo-wrap');
+  if (!wrap) return;
+
+  clearTodoLongPress();
+  todoLongPressTargetId = wrap.dataset.id;
+  todoLongPressStartX = e.clientX;
+  todoLongPressStartY = e.clientY;
+
+  todoLongPressTimer = setTimeout(() => {
+    const id = todoLongPressTargetId;
+    clearTodoLongPress();
+    if (!id) return;
+    suppressTodoToggleId = id;
+    window.openTodoSettings(id);
+  }, LONG_PRESS_MS);
+});
+
+document.getElementById('content-area').addEventListener('pointermove', function(e) {
+  if (!todoLongPressTimer) return;
+  if (Math.abs(e.clientX - todoLongPressStartX) > LONG_PRESS_MOVE_TOLERANCE ||
+      Math.abs(e.clientY - todoLongPressStartY) > LONG_PRESS_MOVE_TOLERANCE) {
+    clearTodoLongPress();
+  }
+});
+
+document.getElementById('content-area').addEventListener('pointerup', clearTodoLongPress);
+document.getElementById('content-area').addEventListener('pointercancel', clearTodoLongPress);
+document.getElementById('content-area').addEventListener('pointerleave', clearTodoLongPress);
+
+document.addEventListener('keydown', e => {
+  const mod = e.metaKey || e.ctrlKey;
+  if (mod && e.key === 'b') { e.preventDefault(); applyFmt('bold'); }
+  if (mod && e.key === 'i') { e.preventDefault(); applyFmt('italic'); }
+  if (mod && e.key === 'u') { e.preventDefault(); applyFmt('underline'); }
+  if (mod && e.key === 'd') { e.preventDefault(); toggleDark(); }
+  if (e.key === 'Escape') { closeModal(); closeMobilePanel(); cancelDelete(); }
+});
+
+// ── Modal ──
+function openModal(type) {
+  modalType = type;
+  const body = document.getElementById('modal-body');
+
+  if (type === 'page-font' || type === 'ui-font') {
+    const isPage = type === 'page-font';
+    const currentFont = isPage ? activePage().font : settings.uiFont;
+
+    // Recent fonts chips
+    const recentHTML = settings.recentFonts.length
+      ? `<div class="modal-section-title" style="margin-top:0">最近使ったフォント</div>
+         <div class="recent-fonts">${
+           settings.recentFonts.map(f =>
+             `<button class="recent-font-chip" onclick="pickRecentFont('${f.replace(/'/g,"\\'")}')">
+               <span>${f}</span>
+               <div class="recent-font-del" onclick="removeRecentFont('${f.replace(/'/g,"\\'")}', event)">
+                 <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+                   <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+                 </svg>
+               </div>
+             </button>`
+           ).join('')
+         }</div>
+         <div class="modal-section-title">Google Fonts 名称</div>`
+      : `<div class="modal-section-title">Google Fonts 名称</div>`;
+
+    body.innerHTML = `
+      ${recentHTML}
+      <input class="modal-input" id="mfi" type="text" value="${currentFont}"
+        placeholder="例: Noto Serif JP" autocomplete="off" spellcheck="false">
+      <button class="modal-apply-btn" onclick="applyFont()">変更を適用</button>`;
+
+    setupFontInput();
+
+  } else if (type === 'settings') {
+    // Theme swatches
+    const swatches = THEMES.map(t =>
+      `<button class="theme-swatch-btn ${settings.theme === t.id ? 'active' : ''}"
+        onclick="pickTheme('${t.id}')">
+        <div class="theme-swatch-circle" style="background:${t.color}"></div>
+        <span class="theme-swatch-label">${t.name}</span>
+      </button>`
+    ).join('');
+
+    body.innerHTML = `
+      <div class="modal-section-title">テーマカラー</div>
+      <div class="theme-swatches" id="swatch-row">${swatches}</div>
+
+      <div class="modal-section-title">外観</div>
+      <div class="dark-toggle">
+        <button class="dark-toggle-btn ${!settings.dark ? 'active' : ''}"
+          onclick="setDark(false)">☀ ライト</button>
+        <button class="dark-toggle-btn ${settings.dark ? 'active' : ''}"
+          onclick="setDark(true)">☾ ダーク</button>
+      </div>
+
+      <div class="settings-row" onclick="openModal('ui-font')">
+        <span class="s-label">UIフォント</span>
+        <span class="s-value">${settings.uiFont}</span>
+      </div>`;
+  } else if (type === 'todo') {
+    const todoEl = document.querySelector(`.todo-wrap[data-id="${window.currentTodoId}"]`);
+    if (!todoEl) return closeModal();
+    const currentRule = todoEl.dataset.reset || 'none';
+    
+    body.innerHTML = `
+      <div class="modal-section-title">自動リセット設定</div>
+      <div class="settings-row" onclick="setTodoRule('none')">
+        <span class="s-label">なし</span>
+        <span class="s-value">${currentRule === 'none' ? '✓' : ''}</span>
+      </div>
+      <div class="settings-row" onclick="setTodoRule('1h')">
+        <span class="s-label">1時間ごと</span>
+        <span class="s-value">${currentRule === '1h' ? '✓' : ''}</span>
+      </div>
+      <div class="settings-row" onclick="setTodoRule('3h')">
+        <span class="s-label">3時間ごと</span>
+        <span class="s-value">${currentRule === '3h' ? '✓' : ''}</span>
+      </div>
+      <div class="settings-row" onclick="setTodoRule('12h')">
+        <span class="s-label">12時間ごと</span>
+        <span class="s-value">${currentRule === '12h' ? '✓' : ''}</span>
+      </div>
+      <div class="settings-row" onclick="setTodoRule('daily')">
+        <span class="s-label">日ごと</span>
+        <span class="s-value">${currentRule === 'daily' ? '✓' : ''}</span>
+      </div>`;
+  }
+
+  document.getElementById('modal-overlay').classList.add('open');
+  modalOpenedAt = Date.now();
+}
+
+function openSettingsModal(e) {
+  if (e) {
+    e.preventDefault();
+    e.stopPropagation();
+  }
+  openModal('settings');
+}
+
+// スマホ向け: Todoをタッチしたとき歯車アイコンを一時表示
+// Todo設定は長押しで開く（ギアアイコンは非表示）
+
+window.toggleTodo = function(el) {
+  const wrap = el.closest('.todo-wrap');
+  if (suppressTodoToggleId && wrap.dataset.id === suppressTodoToggleId) {
+    suppressTodoToggleId = null;
+    return;
+  }
+  const isChecked = wrap.dataset.checked === 'true';
+  const newChecked = !isChecked;
+  wrap.dataset.checked = newChecked;
+  if (newChecked) wrap.dataset.checkedAt = Date.now();
+  else delete wrap.dataset.checkedAt;
+  save();
+};
+
+window.openTodoSettings = function(id) {
+  window.currentTodoId = id;
+  openModal('todo');
+};
+
+window.setTodoRule = function(rule) {
+  const todoEl = document.querySelector(`.todo-wrap[data-id="${window.currentTodoId}"]`);
+  if (todoEl) {
+    todoEl.dataset.reset = rule;
+    save();
+  }
+  closeModal();
+};
+
+// Check for resets every minute
+setInterval(() => {
+  let changed = false;
+  const now = Date.now();
+  document.querySelectorAll('.todo-wrap').forEach(wrap => {
+    if (wrap.dataset.checked !== 'true') return;
+    const rule = wrap.dataset.reset;
+    const checkedAt = parseInt(wrap.dataset.checkedAt) || 0;
+    if (rule === 'none' || !checkedAt) return;
+    let shouldReset = false;
+    if (rule === '1h' && now - checkedAt >= 3600000) shouldReset = true;
+    else if (rule === '3h' && now - checkedAt >= 10800000) shouldReset = true;
+    else if (rule === '12h' && now - checkedAt >= 43200000) shouldReset = true;
+    else if (rule === 'daily') {
+      const d1 = new Date(checkedAt).toLocaleDateString();
+      const d2 = new Date(now).toLocaleDateString();
+      if (d1 !== d2) shouldReset = true;
+    }
+    if (shouldReset) {
+      wrap.dataset.checked = 'false';
+      delete wrap.dataset.checkedAt;
+      changed = true;
+    }
+  });
+  if (changed) save();
+}, 60000);
+
+function pickRecentFont(font) {
+  document.getElementById('mfi').value = font;
+  applyFont();
+}
+
+function addRecentFont(font) {
+  const list = settings.recentFonts.filter(f => f !== font);
+  list.unshift(font);
+  settings.recentFonts = list.slice(0, 6); // Keep up to 6 recent fonts
+}
+
+function removeRecentFont(font, e) {
+  if (e) { e.stopPropagation(); e.preventDefault(); }
+  settings.recentFonts = settings.recentFonts.filter(f => f !== font);
+  save();
+  openModal(modalType); // Refresh modal
+}
+
+function setupFontInput() {
+  setTimeout(() => {
+    const el = document.getElementById('mfi');
+    if (!el) return;
+    el.focus(); el.select();
+    el.addEventListener('keydown', e => { if (e.key === 'Enter') applyFont(); });
+  }, 60);
+}
+
+function closeModal() {
+  document.getElementById('modal-overlay').classList.remove('open');
+  modalType = null;
+}
+function overlayClick(e) {
+  if (Date.now() - modalOpenedAt < 180) return;
+  if (e.target === document.getElementById('modal-scrim') ||
+      e.target === document.getElementById('modal-overlay')) closeModal();
+}
+
+function applyFont() {
+  const el = document.getElementById('mfi');
+  if (!el) return;
+  const font = el.value.trim();
+  if (!font) return;
+  injectFont(font);
+  addRecentFont(font);
+
+  if (modalType === 'page-font') {
+    activePage().font = font;
+    document.getElementById('title-input').style.fontFamily  =
+    document.getElementById('content-area').style.fontFamily = `'${font}', serif`;
+    document.getElementById('font-chip-label').textContent = font;
+  } else if (modalType === 'ui-font') {
+    settings.uiFont = font;
+    document.body.style.setProperty('--ui-font', `'${font}', sans-serif`);
+  }
+  save(); closeModal();
+}
+
+// ── Init ──
+applyTheme();
+document.body.style.setProperty('--ui-font', `'${settings.uiFont}', sans-serif`);
+injectFont(settings.uiFont);
+renderNav();
+loadActivePage();
+setupTodoNormalizerObserver();
+
+// スマホ: [>]ホバーメニューの外側タップで閉じる
+document.addEventListener('touchstart', function(e) {
+  const menu = document.getElementById('hover-menu-container');
+  if (!menu || !menu.classList.contains('expanded')) return;
+  if (!menu.contains(e.target)) {
+    menu.classList.remove('expanded');
+  }
+}, { passive: true });
+</script>
+</body>
+</html>
