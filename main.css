@@ -732,6 +732,7 @@ html[data-theme="dark"] .scroll-icon-dark {
 .filter-btn,
 .sort-btn {
   background-color: #f0f0f0;
+  color: black;
   border: none;
   border-radius: 24px;
   padding: 10px 25px;
@@ -965,7 +966,6 @@ a.blog-item::after {
   }
 }
 
-/* ライトモード（data-theme属性） */
 html[data-theme="light"] .blog-axis-line--top,
 html[data-theme="light"] .blog-axis-line--bottom {
   background: #ccc;
@@ -998,7 +998,7 @@ html[data-theme="light"] .blog-item-category  { background: #f0f0f0; color: #666
   }
 
   .blog-item {
-    border-radius: 16px;
+    border-radius: 24px;
     padding: 12px 14px;
     gap: 8px;
   }
