@@ -4667,13 +4667,3 @@ html[data-theme="dark"] .site-nav-drawer ul li a[aria-current="page"] .site-nav-
     height: 17px;
   }
 }
-/* === Active nav arrow: primary color circle === */
-.site-nav-drawer>ul>li>a[aria-current="page"] .site-nav-item-arrow {
-  background: var(--primary);
-  color: #fff;
-}
-
-html[data-theme="dark"] .site-nav-drawer>ul>li>a[aria-current="page"] .site-nav-item-arrow {
-  background: var(--primary);
-  color: #030303;
-}
