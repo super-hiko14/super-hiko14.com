@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Recorder</title>
+<title>おとどめ — 超シンプルなレコーダー</title>
 <link href="https://fonts.googleapis.com/css2?family=DM+Mono:ital,wght@0,300;0,400;0,500;1,300&family=Noto+Sans+JP:wght@300;400&display=swap" rel="stylesheet">
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
@@ -100,7 +100,7 @@ header h1{font-family:var(--mono);font-size:12px;font-weight:400;letter-spacing:
 </head>
 <body>
 <header>
-  <h1>Recorder</h1>
+  <h1>おとどめ</h1>
   <div class="live-dot" id="liveDot"></div>
 </header>
 <div class="card">
@@ -136,6 +136,40 @@ const cx=canvas.getContext('2d');
 let mediaRecorder=null,audioCtx=null,analyser=null,animId=null;
 let chunks=[],recordings=[],recCount=0;
 let startTime=0,timerIv=null,isRecording=false;
+
+let db=null;
+const DB_NAME='RecorderDB',DB_STORE='recordings',DB_VERSION=1;
+function openDB(){
+  return new Promise((resolve,reject)=>{
+    const req=indexedDB.open(DB_NAME,DB_VERSION);
+    req.onupgradeneeded=()=>{
+      if(!req.result.objectStoreNames.contains(DB_STORE))req.result.createObjectStore(DB_STORE,{keyPath:'id'});
+    };
+    req.onsuccess=()=>resolve(req.result);
+    req.onerror=()=>reject(req.error);
+  });
+}
+function dbGetAll(){
+  return new Promise((resolve,reject)=>{
+    const req=db.transaction(DB_STORE,'readonly').objectStore(DB_STORE).getAll();
+    req.onsuccess=()=>resolve(req.result);
+    req.onerror=()=>reject(req.error);
+  });
+}
+function dbAdd(record){
+  db.transaction(DB_STORE,'readwrite').objectStore(DB_STORE).add(record);
+}
+function dbDelete(id){
+  db.transaction(DB_STORE,'readwrite').objectStore(DB_STORE).delete(id);
+}
+async function loadRecordings(){
+  db=await openDB();
+  const items=await dbGetAll();
+  items.sort((a,b)=>b.id-a.id);
+  recordings=items.map(it=>({id:it.id,url:URL.createObjectURL(it.blob),blob:it.blob,ext:it.ext,dur:it.dur,name:it.name}));
+  recCount=items.reduce((m,it)=>Math.max(m,it.id),0);
+  renderList();
+}
 
 const PREFER=['audio/ogg;codecs=opus','audio/ogg','audio/webm;codecs=opus','audio/webm'];
 const supportedMime=PREFER.find(t=>MediaRecorder.isTypeSupported(t))||'';
@@ -225,7 +259,9 @@ function finishRec(){
   const url=URL.createObjectURL(blob);
   const ext=mime.includes('ogg')?'ogg':'webm';
   recCount++;
-  recordings.unshift({id:recCount,url,blob,ext,dur,name:`録音 ${recCount}`});
+  const rec={id:recCount,url,blob,ext,dur,name:`録音 ${recCount}`};
+  recordings.unshift(rec);
+  dbAdd({id:rec.id,blob:rec.blob,ext:rec.ext,dur:rec.dur,name:rec.name});
   renderList();
 }
 recBtn.addEventListener('click',()=>isRecording?stopRec():startRec());
@@ -372,12 +408,13 @@ function bindPlayer(r,p){
   window.addEventListener('touchend',()=>volDrag=false);
 
   document.querySelector(`.del-btn[data-id="${r.id}"]`).addEventListener('click',()=>{
-    audio.pause();recordings=recordings.filter(x=>x.id!==r.id);delete players[r.id];renderList();
+    audio.pause();recordings=recordings.filter(x=>x.id!==r.id);delete players[r.id];dbDelete(r.id);renderList();
   });
 }
 
 setupCanvas();drawIdle();
 window.addEventListener('resize',()=>{setupCanvas();if(!isRecording)drawIdle();});
+loadRecordings();
 </script>
 </body>
 </html>

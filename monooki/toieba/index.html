@@ -241,6 +241,27 @@
   .tp-empty { text-align: center; font-size: 12.5px; color: var(--sub); padding: 14px 0 4px; }
   .tp-empty.hide { display: none; }
 
+  /* タイマーパネル */
+  .tmpanel { margin-top: 16px; padding-top: 16px; border-top: 1px solid var(--line); }
+  .tm-item {
+    display: flex; align-items: center; gap: 10px;
+    padding: 10px 12px; border-radius: 16px; background: var(--bg);
+  }
+  .tm-item.done { background: var(--accent-soft); }
+  .tm-time {
+    font-family: var(--mono); font-size: 15px; font-variant-numeric: tabular-nums;
+    color: var(--ink); flex: none; min-width: 58px;
+  }
+  .tm-item.done .tm-time { color: var(--accent); }
+  .tm-label { flex: 1; font-size: 14px; word-break: break-all; color: var(--sub); }
+  .tm-restart, .tm-del {
+    flex: none; width: 22px; height: 22px; border-radius: 50%; border: none;
+    background: transparent; color: var(--sub); cursor: pointer; font-size: 13px;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .tm-restart:hover { color: var(--accent); }
+  .tm-del:hover { color: #b5544a; }
+
   /* ヒント (折りたたみ) */
   #hints {
     margin-top: 0; max-height: 0; opacity: 0; overflow: hidden;
@@ -344,6 +365,13 @@
         </div>
         <div class="tp-list" id="tpList"></div>
         <div class="tp-empty" id="tpEmpty">まだ何もありません</div>
+      </div>
+      <div class="tmpanel" id="tmpanel" hidden>
+        <div class="tp-add">
+          <input id="tmInput" type="text" placeholder="例: 5m 集中タイム (Enterで追加)" autocomplete="off" spellcheck="false">
+        </div>
+        <div class="tp-list" id="tmList"></div>
+        <div class="tp-empty" id="tmEmpty">タイマーがありません</div>
       </div>
     </div>
   </div>
@@ -562,7 +590,7 @@ const WD = ['日', '月', '火', '水', '木', '金', '土'];
 function today0() { const n = new Date(); return new Date(n.getFullYear(), n.getMonth(), n.getDate()); }
 function parseDateTok(s) {
   s = s.trim();
-  if (/^(today|今日|now|きょう)$/i.test(s)) return today0();
+  if (/^(today|今日|きょう)$/i.test(s)) return today0();
   if (/^(tomorrow|明日|あした)$/i.test(s)) { const t = today0(); t.setDate(t.getDate() + 1); return t; }
   if (/^(yesterday|昨日|きのう)$/i.test(s)) { const t = today0(); t.setDate(t.getDate() - 1); return t; }
   let m = s.match(/^(\d{4})[-/.年](\d{1,2})[-/.月](\d{1,2})日?$/);
@@ -581,18 +609,62 @@ function dstr(d) {
 }
 function dayDiff(a, b) { return Math.round((b - a) / 86400000); }
 
+// ---------- 現在時刻 / 時間の長さ
+function clockStr(d) {
+  const p = n => String(n).padStart(2, '0');
+  return p(d.getHours()) + ':' + p(d.getMinutes()) + ':' + p(d.getSeconds());
+}
+// 500 -> "5秒", 3661000 -> "1時間1分1秒" のような人間向け表記
+function fmtDuration(ms) {
+  const s = Math.round(ms / 1000);
+  const h = Math.floor(s / 3600), mi = Math.floor((s % 3600) / 60), sec = s % 60;
+  let out = '';
+  if (h) out += h + '時間';
+  if (mi) out += mi + '分';
+  if (sec || !out) out += sec + '秒';
+  return out;
+}
+const UNIT_T = '(?:h|hr|hrs|hour|hours|時間|m|min|mins|minute|minutes|分|s|sec|secs|second|seconds|秒)';
+function parseTimeOffsetMs(s) {
+  const opRe = new RegExp('([+\\-])\\s*(\\d+)\\s*(' + UNIT_T + ')', 'gi');
+  let mm, total = 0;
+  while ((mm = opRe.exec(s))) {
+    const n = +mm[2] * (mm[1] === '-' ? -1 : 1), u = mm[3].toLowerCase();
+    if (/^(h|hr|hrs|hour|hours|時間)$/.test(u)) total += n * 3600000;
+    else if (/^(m|min|mins|minute|minutes|分)$/.test(u)) total += n * 60000;
+    else total += n * 1000;
+  }
+  return total;
+}
+function tryClock(q) {
+  // now / clock ± N単位 (now+1h+21m のように連続指定にも対応)
+  const m = q.trim().match(new RegExp('^(?:now|clock|時刻|現在時刻|いま)((?:\\s*[+\\-]\\s*\\d+\\s*' + UNIT_T + ')*)$', 'i'));
+  if (!m) return null;
+  const offsetMs = m[1] ? parseTimeOffsetMs(m[1]) : 0;
+  const d = new Date(Date.now() + offsetMs);
+  const label = offsetMs === 0 ? '現在時刻'
+    : offsetMs > 0 ? fmtDuration(offsetMs) + '後の時刻' : fmtDuration(-offsetMs) + '前の時刻';
+  return { label, big: clockStr(d), isClock: true, clockOffsetMs: offsetMs,
+    rows: [['日付', dstr(d)]] };
+}
+
 function tryDate(q) {
-  // 日付 ± N単位
-  let m = q.match(/^(.+?)\s*([+\-])\s*(\d+)\s*(d|day|days|日|w|week|weeks|週|週間|m|month|months|月|ヶ月|か月|y|year|years|年)$/i);
+  // 日付 ± N単位 (today+5y+3m+5d のように連続指定にも対応)
+  const UNIT_PAT = '(?:d|day|days|日|w|week|weeks|週|週間|m|month|months|月|ヶ月|か月|y|year|years|年)';
+  let m = q.match(new RegExp('^(.+?)((?:\\s*[+\\-]\\s*\\d+\\s*' + UNIT_PAT + ')+)$', 'i'));
   if (m) {
     const base = parseDateTok(m[1]);
     if (base) {
-      const n = +m[3] * (m[2] === '-' ? -1 : 1), u = m[4].toLowerCase();
       const r = new Date(base);
-      if (/^(d|day|days|日)$/.test(u)) r.setDate(r.getDate() + n);
-      else if (/^(w|week|weeks|週|週間)$/.test(u)) r.setDate(r.getDate() + n * 7);
-      else if (/^(m|month|months|月|ヶ月|か月)$/.test(u)) r.setMonth(r.getMonth() + n);
-      else r.setFullYear(r.getFullYear() + n);
+      const opRe = new RegExp('([+\\-])\\s*(\\d+)\\s*(' + UNIT_PAT + ')', 'gi');
+      let mm;
+      while ((mm = opRe.exec(m[2]))) {
+        const n = +mm[2] * (mm[1] === '-' ? -1 : 1), u = mm[3].toLowerCase();
+        if (/^(d|day|days|日)$/.test(u)) r.setDate(r.getDate() + n);
+        else if (/^(w|week|weeks|週|週間)$/.test(u)) r.setDate(r.getDate() + n * 7);
+        else if (/^(m|month|months|月|ヶ月|か月)$/.test(u)) r.setMonth(r.getMonth() + n);
+        else r.setFullYear(r.getFullYear() + n);
+      }
       const dd = dayDiff(today0(), r);
       return { label: '日付の計算', big: dstr(r),
         rows: [['起点', dstr(base)], ['今日から', dd === 0 ? '今日' : dd > 0 ? dd + '日後' : (-dd) + '日前']] };
@@ -666,6 +738,54 @@ function tryTodoRemove(q) {
 function tryTodoView(q) {
   if (/^(?:todo(?:\s*(?:view|list))?|ToDo(?:一覧)?)$/i.test(q.trim())) {
     return { label: 'ToDo', big: '', todoView: true, rows: [] };
+  }
+  return null;
+}
+
+// ---------- タイマー (実際の保存はアプリ側。ここではプレビューを返すだけ)
+// 先頭の連続する "N単位" 部分を長さ(ms)として切り出し、残りをラベルにする
+function parseDurationPrefix(s) {
+  s = s.trim();
+  const re = new RegExp('\\s*(\\d+)\\s*(' + UNIT_T + ')', 'gi');
+  let mm, lastIndex = 0, ms = 0, matched = false;
+  while ((mm = re.exec(s))) {
+    if (mm.index !== lastIndex) break;
+    matched = true;
+    const n = +mm[1], u = mm[2].toLowerCase();
+    if (/^(h|hr|hrs|hour|hours|時間)$/.test(u)) ms += n * 3600000;
+    else if (/^(m|min|mins|minute|minutes|分)$/.test(u)) ms += n * 60000;
+    else ms += n * 1000;
+    lastIndex = re.lastIndex;
+  }
+  if (!matched || ms <= 0) return null;
+  return { ms, rest: s.slice(lastIndex).trim() };
+}
+function tryTimerAdd(q) {
+  const m = q.match(/^timer\s*add\s+(.+)$/i) || q.match(/^(?:タイマー\s*追加)\s*[:：]?\s*(.+)$/i);
+  if (!m) return null;
+  const parsed = parseDurationPrefix(m[1]);
+  if (!parsed) return null;
+  const label = parsed.rest || fmtDuration(parsed.ms);
+  return { label: 'タイマー追加 (Enterで確定)', big: fmtDuration(parsed.ms) + (parsed.rest ? ' · ' + parsed.rest : ''),
+    timerAdd: { ms: parsed.ms, label }, rows: [] };
+}
+function tryTimerRemove(q) {
+  const m = q.match(/^timer\s*(?:remove|del|delete)\s+(.+)$/i) || q.match(/^(?:タイマー\s*削除)\s*[:：]?\s*(.+)$/i);
+  if (!m) return null;
+  const text = m[1].trim();
+  if (!text) return null;
+  return { label: 'タイマーを削除する (Enterで確定)', big: text, timerRemove: text, rows: [] };
+}
+function tryTimerRestart(q) {
+  const m = q.match(/^timer\s*(?:restart|reset)\s+(.+)$/i) || q.match(/^(?:タイマー\s*(?:再開|リスタート|リセット))\s*[:：]?\s*(.+)$/i);
+  if (!m) return null;
+  const text = m[1].trim();
+  if (!text) return null;
+  return { label: 'タイマーをリスタートする (Enterで確定)', big: text, timerRestart: text, rows: [] };
+}
+function tryTimerView(q) {
+  if (/^(?:timer(?:\s*(?:view|list))?|タイマー(?:一覧)?)$/i.test(q.trim())) {
+    return { label: 'タイマー', big: '', timerView: true, rows: [] };
   }
   return null;
 }
@@ -771,11 +891,16 @@ function interpret(raw) {
   if ((r = tryTodoCheck(q))) return r;
   if ((r = tryTodoRemove(q))) return r;
   if ((r = tryTodoView(q))) return r;
+  if ((r = tryTimerAdd(q))) return r;
+  if ((r = tryTimerRemove(q))) return r;
+  if ((r = tryTimerRestart(q))) return r;
+  if ((r = tryTimerView(q))) return r;
   if ((r = tryGen(q))) return r;
   if ((r = tryColorPickerTrigger(q))) return r;
   if ((r = tryColor(q))) return r;
   if ((r = tryBase(q))) return r;
   if ((r = tryPercent(q))) return r;
+  if ((r = tryClock(q))) return r;
   if ((r = tryDate(q))) return r;
   if ((r = tryUnits(q))) return r;
   const v = evalMath(q);
@@ -797,7 +922,8 @@ const qEl = $('#q'), resEl = $('#result'), labelEl = $('#rlabel'),
       hintsEl = $('#hints'), histWrap = $('#histwrap'), histEl = $('#hist'),
       suggestEl = $('#suggest'), bmToggleWrap = $('#bmToggleWrap'), bmToggle = $('#bmToggle'),
       bookmarkBtn = $('#bookmark'), infoBtn = $('#info'),
-      tpanel = $('#tpanel'), tpInput = $('#tpInput'), tpList = $('#tpList'), tpEmpty = $('#tpEmpty');
+      tpanel = $('#tpanel'), tpInput = $('#tpInput'), tpList = $('#tpList'), tpEmpty = $('#tpEmpty'),
+      tmpanel = $('#tmpanel'), tmInput = $('#tmInput'), tmList = $('#tmList'), tmEmpty = $('#tmEmpty');
 
 // ---- 永続化 (使える環境なら保存、なければメモリだけ)
 const store = {
@@ -809,6 +935,7 @@ const store = {
 
 let bookmarks = [];
 let todos = [];
+let timers = [];
 let current = null;
 let pickerOpen = false;
 
@@ -987,11 +1114,82 @@ tpInput.addEventListener('keydown', e => {
   addTodo(t); tpInput.value = ''; renderTodoList();
 });
 
+// ===================== タイマー =====================
+function saveTimers() { store.set('sokuto-timers', timers); }
+function addTimer(ms, label) {
+  timers.unshift({ id: 'tm' + Date.now() + Math.random().toString(36).slice(2, 7),
+    label: label || fmtDuration(ms), durationMs: ms, endAt: Date.now() + ms });
+  saveTimers();
+}
+function restartTimer(id) {
+  const t = timers.find(x => x.id === id);
+  if (t) { t.endAt = Date.now() + t.durationMs; saveTimers(); }
+}
+function deleteTimer(id) { timers = timers.filter(x => x.id !== id); saveTimers(); }
+// ラベル名の部分一致、それで見つからなければ元の長さ (5m など) での一致を試す
+function findTimerByQuery(query) {
+  const nl = query.toLowerCase();
+  let t = timers.find(x => x.label.toLowerCase().includes(nl));
+  if (t) return t;
+  const parsed = parseDurationPrefix(query);
+  if (parsed && !parsed.rest) t = timers.find(x => x.durationMs === parsed.ms);
+  return t || null;
+}
+function restartTimerByName(name) {
+  const t = findTimerByQuery(name);
+  if (!t) return null;
+  t.endAt = Date.now() + t.durationMs; saveTimers();
+  return t.label;
+}
+function removeTimerByName(name) {
+  const t = findTimerByQuery(name);
+  if (!t) return null;
+  timers = timers.filter(x => x.id !== t.id);
+  saveTimers();
+  return t.label;
+}
+function fmtCountdown(ms) {
+  if (ms <= 0) return '00:00';
+  const s = Math.ceil(ms / 1000);
+  const h = Math.floor(s / 3600), mi = Math.floor((s % 3600) / 60), sec = s % 60;
+  const p = n => String(n).padStart(2, '0');
+  return h > 0 ? h + ':' + p(mi) + ':' + p(sec) : p(mi) + ':' + p(sec);
+}
+function renderTimerList() {
+  tmEmpty.classList.toggle('hide', timers.length > 0);
+  const sorted = [...timers].sort((a, b) => a.endAt - b.endAt);
+  tmList.innerHTML = sorted.map(t => {
+    const remain = t.endAt - Date.now();
+    const done = remain <= 0;
+    return '<div class="tm-item ' + (done ? 'done' : '') + '" data-id="' + t.id + '">' +
+      '<span class="tm-time">' + (done ? '終了' : fmtCountdown(remain)) + '</span>' +
+      '<span class="tm-label">' + esc(t.label) + '</span>' +
+      '<button type="button" class="tm-restart" aria-label="リスタート">⟲</button>' +
+      '<button type="button" class="tm-del" aria-label="削除">×</button>' +
+    '</div>';
+  }).join('');
+}
+tmList.addEventListener('click', e => {
+  const item = e.target.closest('.tm-item'); if (!item) return;
+  const id = item.dataset.id;
+  if (e.target.closest('.tm-del')) { deleteTimer(id); renderTimerList(); return; }
+  if (e.target.closest('.tm-restart')) { restartTimer(id); renderTimerList(); }
+});
+tmInput.addEventListener('keydown', e => {
+  if (e.key !== 'Enter') return;
+  const raw = tmInput.value.trim(); if (!raw) return;
+  const parsed = parseDurationPrefix(raw);
+  if (!parsed) return;
+  addTimer(parsed.ms, parsed.rest || null);
+  tmInput.value = ''; renderTimerList();
+});
+
 function flashCard(label, big) {
   labelEl.textContent = label;
   bigEl.innerHTML = '<span class="bigtext">' + esc(big) + '</span>';
   rowsEl.innerHTML = ''; rowsEl.style.display = 'none';
   tpanel.hidden = true;
+  tmpanel.hidden = true;
   resEl.hidden = false;
   bookmarkBtn.disabled = true; bookmarkBtn.classList.remove('saved');
 }
@@ -1015,13 +1213,51 @@ function commitTodoRemove(text) {
   qEl.value = ''; hideSuggest();
   setTimeout(() => { if (!qEl.value.trim()) render(null); }, 1100);
 }
+function commitTimerAdd(data) {
+  addTimer(data.ms, data.label);
+  flashCard('タイマー追加 ✓', data.label);
+  qEl.value = ''; hideSuggest();
+  setTimeout(() => { if (!qEl.value.trim()) render(null); }, 900);
+}
+function commitTimerRemove(text) {
+  const matched = removeTimerByName(text);
+  if (matched) flashCard('タイマー削除 ✓', matched);
+  else flashCard('タイマー', '「' + text + '」は見つかりませんでした');
+  qEl.value = ''; hideSuggest();
+  setTimeout(() => { if (!qEl.value.trim()) render(null); }, 1100);
+}
+function commitTimerRestart(text) {
+  const matched = restartTimerByName(text);
+  if (matched) flashCard('タイマーリスタート ✓', matched);
+  else flashCard('タイマー', '「' + text + '」は見つかりませんでした');
+  qEl.value = ''; hideSuggest();
+  setTimeout(() => { if (!qEl.value.trim()) render(null); }, 1100);
+}
 
 // ===================== 描画 =====================
+let clockTimer = null;
+function stopClockTimer() { if (clockTimer) { clearInterval(clockTimer); clockTimer = null; } }
+function startClockTimer() {
+  clockTimer = setInterval(() => {
+    if (!current || !current.isClock) { stopClockTimer(); return; }
+    const d = new Date(Date.now() + (current.clockOffsetMs || 0));
+    current.big = clockStr(d);
+    const bigTextEl = bigEl.querySelector('.bigtext');
+    if (bigTextEl) bigTextEl.textContent = current.big;
+    const dateRowEl = rowsEl.querySelector('.res-row .v');
+    if (dateRowEl) dateRowEl.textContent = dstr(d);
+  }, 1000);
+}
+let timerPanelTick = null;
+function stopTimerPanelTick() { if (timerPanelTick) { clearInterval(timerPanelTick); timerPanelTick = null; } }
 function render(r) {
   current = r;
+  stopClockTimer();
+  stopTimerPanelTick();
   if (!r) {
     resEl.hidden = true;
     tpanel.hidden = true;
+    tmpanel.hidden = true;
     if (pickerOpen) closePanel();
     updateBookmarkBtn();
     return;
@@ -1031,10 +1267,20 @@ function render(r) {
     labelEl.textContent = 'ToDo';
     rowsEl.style.display = 'none'; rowsEl.innerHTML = '';
     tpanel.hidden = false;
+    tmpanel.hidden = true;
     renderTodoList();
+    if (pickerOpen) closePanel();
+  } else if (r.timerView) {
+    labelEl.textContent = 'タイマー';
+    rowsEl.style.display = 'none'; rowsEl.innerHTML = '';
+    tpanel.hidden = true;
+    tmpanel.hidden = false;
+    renderTimerList();
+    timerPanelTick = setInterval(renderTimerList, 1000);
     if (pickerOpen) closePanel();
   } else {
     tpanel.hidden = true;
+    tmpanel.hidden = true;
     labelEl.textContent = r.label;
     bigEl.innerHTML =
       (r.swatch ? '<span class="swatch" style="background:' + esc(r.swatch) + '" title="クリックでカラーピッカーを開く"></span>' : '') +
@@ -1045,6 +1291,7 @@ function render(r) {
     ).join('');
     rowsEl.style.display = (r.rows && r.rows.length) ? '' : 'none';
     if (!r.pickerTrigger && !r.swatchClickable && pickerOpen) closePanel();
+    if (r.isClock) startClockTimer();
   }
   updateBookmarkBtn();
 }
@@ -1083,7 +1330,8 @@ bigEl.addEventListener('keydown', e => {
 });
 
 // ===================== ブックマーク =====================
-function bookmarkable(r) { return r && !r.pickerTrigger && !r.todoView && !r.todoAdd && !r.todoCheck && !r.todoRemove; }
+function bookmarkable(r) { return r && !r.pickerTrigger && !r.todoView && !r.todoAdd && !r.todoCheck && !r.todoRemove
+  && !r.timerView && !r.timerAdd && !r.timerRemove && !r.timerRestart; }
 function updateBookmarkBtn() {
   if (!bookmarkable(current)) {
     bookmarkBtn.disabled = true; bookmarkBtn.classList.remove('saved');
@@ -1149,6 +1397,12 @@ const COMMANDS = [
   { cmd: 'todo remove ', hint: 'ToDoを削除する' },
   { cmd: '2d6', hint: 'サイコロを振る' },
   { cmd: 'random ', hint: '乱数を生成' },
+  { cmd: 'now', hint: '現在時刻を表示' },
+  { cmd: 'clock', hint: '現在時刻を表示' },
+  { cmd: 'timer add ', hint: 'タイマーを追加 (例: 5m 集中)' },
+  { cmd: 'timer view', hint: 'タイマー一覧を見る' },
+  { cmd: 'timer remove ', hint: 'タイマーを削除する' },
+  { cmd: 'timer restart ', hint: 'タイマーをリスタートする' },
 ];
 function hideSuggest() { suggestEl.classList.remove('open'); suggestEl.innerHTML = ''; }
 function renderSuggest(list) {
@@ -1178,6 +1432,14 @@ function updateSuggestions() {
     renderSuggest(cands.slice(0, 6).map(t => ({ cmd: prefix + t.text, hint: t.done ? '完了済み' : '未完了' })));
     return;
   }
+  const timerMatch = raw.match(/^(timer\s*(?:remove|del|delete|restart|reset)\s+|タイマー\s*(?:削除|再開|リスタート|リセット)\s*[:：]?\s*)(.*)$/i);
+  if (timerMatch && timers.length) {
+    const prefix = timerMatch[1];
+    const partial = timerMatch[2].trim().toLowerCase();
+    const cands = timers.filter(t => t.label.toLowerCase().includes(partial));
+    renderSuggest(cands.slice(0, 6).map(t => ({ cmd: prefix + t.label, hint: (t.endAt - Date.now() <= 0) ? '終了' : fmtCountdown(t.endAt - Date.now()) })));
+    return;
+  }
   const list = COMMANDS.filter(c => c.cmd.toLowerCase().startsWith(ql) && c.cmd.trim().toLowerCase() !== ql);
   renderSuggest(list.slice(0, 6));
 }
@@ -1190,6 +1452,9 @@ qEl.addEventListener('keydown', e => {
     if (current && current.todoAdd) { commitTodoAdd(current.todoAdd); return; }
     if (current && current.todoCheck) { commitTodoCheck(current.todoCheck); return; }
     if (current && current.todoRemove) { commitTodoRemove(current.todoRemove); return; }
+    if (current && current.timerAdd) { commitTimerAdd(current.timerAdd); return; }
+    if (current && current.timerRemove) { commitTimerRemove(current.timerRemove); return; }
+    if (current && current.timerRestart) { commitTimerRestart(current.timerRestart); return; }
   }
   if (e.key === 'Escape') { qEl.value = ''; evaluate(); hideSuggest(); }
 });
@@ -1197,7 +1462,8 @@ qEl.addEventListener('keydown', e => {
 // ---- ヒントチップ (info ボタンで開閉)
 const HINTS = ['(120+80)*1.1', '3980 + 10%', '税込 2980', '5km to mi', '30c to f',
                '12/25', 'today + 90日', '7/5 〜 12/25', '#1e90ff', '0xff',
-               '2d6', 'pass 20', 'uuid', 'todo add 牛乳を買う', 'todo view', 'todo check 牛乳', 'todo remove 牛乳'];
+               '2d6', 'pass 20', 'uuid', 'now', 'now+1h+21m', 'todo add 牛乳を買う', 'todo view', 'todo check 牛乳', 'todo remove 牛乳',
+               'timer add 5m 集中', 'timer view'];
 for (const h of HINTS) {
   const b = document.createElement('button');
   b.className = 'chip'; b.type = 'button'; b.textContent = h;
@@ -1216,6 +1482,8 @@ infoBtn.addEventListener('click', () => {
     if (Array.isArray(savedB)) { bookmarks = savedB.slice(0, 50); renderBookmarks(); }
     const savedT = await store.get('sokuto-todos');
     if (Array.isArray(savedT)) { todos = savedT; }
+    const savedTm = await store.get('sokuto-timers');
+    if (Array.isArray(savedTm)) { timers = savedTm; }
   }
   qEl.focus();
 })();
