@@ -2,7 +2,32 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
     <loc>https://super-hiko14.com/</loc>
-    <lastmod>2026-03-04</lastmod>
+    <lastmod>2026-07-10</lastmod>
     <priority>1.0</priority>
+  </url>
+  <url>
+    <loc>https://super-hiko14.com/about/</loc>
+    <lastmod>2026-07-10</lastmod>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://super-hiko14.com/contact/</loc>
+    <lastmod>2026-07-10</lastmod>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://super-hiko14.com/monooki/</loc>
+    <lastmod>2026-07-10</lastmod>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://super-hiko14.com/terms/</loc>
+    <lastmod>2026-07-10</lastmod>
+    <priority>0.5</priority>
+  </url>
+  <url>
+    <loc>https://super-hiko14.com/privacypolicy/</loc>
+    <lastmod>2026-07-10</lastmod>
+    <priority>0.5</priority>
   </url>
 </urlset>

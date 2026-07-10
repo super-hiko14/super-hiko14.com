@@ -383,6 +383,10 @@ function initSiteNav() {
       title: 'ホーム',
       url: 'https://super-hiko14.com/',
     },
+    {
+      title: 'About',
+      url: 'https://super-hiko14.com/about/',
+    },
     { title: 'お問い合わせ',
       url: 'https://super-hiko14.com/contact/'
     },
@@ -406,10 +410,10 @@ function initSiteNav() {
     },
     {
       title: '法務',
-      url: 'https://legal.super-hiko14.com/',
+      url: 'https://super-hiko14.com/terms/',
       submenu: [
-        { label: 'プライバシーポリシー', url: 'https://legal.super-hiko14.com/privacypolicy/' },
-        { label: '利用規約', url: 'https://legal.super-hiko14.com/terms/' },
+        { label: 'プライバシーポリシー', url: 'https://super-hiko14.com/privacypolicy/' },
+        { label: '利用規約', url: 'https://super-hiko14.com/terms/' },
       ]
     }
   ];

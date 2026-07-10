@@ -84,6 +84,14 @@
           <span class="form-error" id="messageError"></span>
         </div>
 
+        <div class="form-group form-agree">
+          <label class="form-checkbox-label" for="agree">
+            <input type="checkbox" id="agree" name="agree" class="form-checkbox" required>
+            <span><a href="https://super-hiko14.com/privacypolicy" target="_blank" rel="noopener">プライバシーポリシー</a>に同意します<span class="required-mark">*</span></span>
+          </label>
+          <span class="form-error" id="agreeError"></span>
+        </div>
+
         <div class="form-actions">
           <button type="submit" class="submit-button">送信</button>
         </div>
@@ -121,8 +129,8 @@
             </div>
             <div class="footer-nav-group">
               <span class="footer-nav-label">法的情報</span>
-              <a href="https://legal.super-hiko14.com/terms">利用規約</a>
-              <a href="https://legal.super-hiko14.com/privacypolicy">プライバシーポリシー</a>
+              <a href="https://super-hiko14.com/terms">利用規約</a>
+              <a href="https://super-hiko14.com/privacypolicy">プライバシーポリシー</a>
             </div>
           </nav>
           <div class="footer-controls">
@@ -154,6 +162,7 @@
   const emailInput = document.getElementById('email');
   const nameInput = document.getElementById('name');
   const messageInput = document.getElementById('message');
+  const agreeInput = document.getElementById('agree');
   const formStatus = document.getElementById('formStatus');
   
   // テキストエリア自動リサイズ機能
@@ -186,6 +195,7 @@
     document.getElementById('emailError').textContent = '';
     document.getElementById('nameError').textContent = '';
     document.getElementById('messageError').textContent = '';
+    document.getElementById('agreeError').textContent = '';
   }
 
   function showError(fieldId, message) {
@@ -211,6 +221,11 @@
 
     if (!messageInput.value.trim()) {
       showError('messageError', 'お問い合わせ内容を入力してください');
+      isValid = false;
+    }
+
+    if (!agreeInput.checked) {
+      showError('agreeError', 'プライバシーポリシーへの同意が必要です');
       isValid = false;
     }
 

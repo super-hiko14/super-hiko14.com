@@ -67,50 +67,6 @@ export default async function handler(req, res) {
       },
     });
 
-    // 送信者へのレスポンスメール
-    const mailOptionsToUser = {
-      from: `"Super Hiko14" <${process.env.EMAIL_USER}>`,
-      to: email,
-      subject: 'お問い合わせを受け付けました | Super Hiko14',
-      html: `
-        <html>
-          <head>
-            <meta charset="utf-8">
-            <style>
-              body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Helvetica', 'Arial', sans-serif; line-height: 1.6; color: #333; }
-              .container { max-width: 600px; margin: 0 auto; padding: 20px; }
-              .header { border-bottom: 2px solid #6ddbb0; padding-bottom: 20px; }
-              .header h1 { margin: 0; color: #6ddbb0; font-size: 24px; }
-              .content { padding: 20px 0; }
-              .footer { border-top: 1px solid #ddd; padding-top: 20px; font-size: 12px; color: #999; }
-            </style>
-          </head>
-          <body>
-            <div class="container">
-              <div class="header">
-                <h1>お問い合わせを受け付けました</h1>
-              </div>
-              <div class="content">
-                <p>${name}様</p>
-                <p>いつもご利用いただきありがとうございます。</p>
-                <p>このたびは、お問い合わせをいただきまして、誠にありがとうございます。</p>
-                <p>お問い合わせの内容を確認させていただき、通常2～3営業日以内にご返信させていただきます。</p>
-                <p><strong>ご記入いただいた内容：</strong></p>
-                <div style="background: #f5f5f5; padding: 15px; border-radius: 5px; white-space: pre-wrap;">${escapeHtml(message)}</div>
-                <p style="margin-top: 20px; font-size: 14px; color: #666;">
-                  ご質問やご不明な点がございましたら、お気軽にお問い合わせください。<br>
-                  Super Hiko14
-                </p>
-              </div>
-              <div class="footer">
-                <p>このメールは自動送信されたものです。返信する場合は、お問い合わせフォームを再度ご利用ください。</p>
-              </div>
-            </div>
-          </body>
-        </html>
-      `,
-    };
-
     // 管理者へのメール
     const mailOptionsToAdmin = {
       from: `"Super Hiko14 Contact Form" <${process.env.EMAIL_USER}>`,
@@ -158,8 +114,7 @@ export default async function handler(req, res) {
       `,
     };
 
-    // メール送信
-    await transporter.sendMail(mailOptionsToUser);
+    // メール送信（管理者宛のみ）
     await transporter.sendMail(mailOptionsToAdmin);
 
     res.status(200).json({ message: 'メールを送信しました' });
