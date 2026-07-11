@@ -569,16 +569,18 @@ function initSiteNav() {
   /* ---------- current page highlight & accordion setup ---------- */
   try {
     const currentHost = location.hostname;
-    
+    const normalizePath = (path) => path.replace(/\/+$/, '') || '/';
+    const currentPath = normalizePath(location.pathname);
+
     drawer.querySelectorAll('a[href]').forEach(link => {
       try {
         const linkUrl = new URL(link.href);
         const linkLi = link.closest('li');
         const arrowEl = link.querySelector('.site-nav-item-arrow');
-        
-        // Check if this is the current domain
-        const isCurrentDomain = linkUrl.hostname === currentHost;
-        
+
+        // Check if this link points to the current page (same domain AND same path)
+        const isCurrentDomain = linkUrl.hostname === currentHost && normalizePath(linkUrl.pathname) === currentPath;
+
         if (isCurrentDomain) {
           link.setAttribute('aria-current', 'page');
           // Change arrow to down arrow for current page
