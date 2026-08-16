@@ -4767,3 +4767,73 @@ html[data-theme="dark"] .site-nav-drawer ul li a[aria-current="page"] .site-nav-
     height: 17px;
   }
 }
+
+/* =============================================
+   トップページ改修（ヒーロー微調整）
+   ============================================= */
+
+/* ヒーロー背景: ごくゆっくりズームして奥行きを出す */
+.hiko-hero .kj-hero-bg {
+  animation: hiko-hero-zoom 36s ease-in-out infinite alternate;
+  will-change: transform;
+}
+
+@keyframes hiko-hero-zoom {
+  from { transform: scale(1); }
+  to { transform: scale(1.07); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hiko-hero .kj-hero-bg {
+    animation: none;
+  }
+}
+
+/* アイコン: うっすら光るリング + ホバーでふわっと */
+.hiko-hero .profile-hero-avatar-wrap {
+  box-shadow: 0 0 0 4px rgba(255, 255, 255, 0.08), 0 8px 30px rgba(0, 0, 0, 0.35);
+  transition: transform 0.35s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.35s ease;
+}
+
+.hiko-hero .profile-hero-avatar-wrap:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 0 0 6px rgba(255, 255, 255, 0.12), 0 14px 36px rgba(0, 0, 0, 0.4);
+}
+
+/* ページリンク: ホバーでブランドグラデのアクセントバー */
+.hiko-page-link {
+  overflow: hidden;
+}
+
+.hiko-page-link::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, #2d454d, #c2dfc5);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.hiko-page-link:hover::before,
+.hiko-page-link:focus-visible::before {
+  transform: scaleX(1);
+}
+
+.hiko-page-link:focus-visible {
+  outline: none;
+}
+
+/* トップページ: ヒーローとフッターの間の空白を圧縮 */
+.hiko-box {
+  margin-bottom: 26vh;
+}
+
+@media screen and (max-width: 768px) {
+  .hiko-box {
+    margin-bottom: 22vh;
+  }
+}
